@@ -1,5 +1,5 @@
 {
-    "name": "dmytrii/silent",
+    "name": "avangward/silent",
     "autoload": {
         "psr-4": {
             "Silent\\": "src/"
@@ -11,6 +11,14 @@
             "email": "lukiaschenkoff@gmail.com"
         }
     ],
+    "extra": {
+        "merge-plugin": {
+            "merge-plugin": {
+                "include": ["plugins/*/composer.json"],
+                "merge-dev": true
+            }
+        }
+    },
     "require": {
         "php": ">=8.4",
         "symfony/http-client": "^8.1",
