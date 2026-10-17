@@ -1,0 +1,19 @@
+{
+    "name": "dmytrii/silent",
+    "autoload": {
+        "psr-4": {
+            "Silent\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dmytrii Lukiashchenko",
+            "email": "lukiaschenkoff@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.4",
+        "symfony/http-client": "^8.1",
+        "symfony/serializer-pack": "^1.4"
+    }
+}
