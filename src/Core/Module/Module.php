@@ -12,15 +12,15 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 abstract class Module implements ModuleInterface {
     public const CLOSE = 0;
     public const CONTINUE = 1;
-    private array $params = [];
+    private mixed $params = null;
     public function plugins(): array { return []; }
     public function capabilities(Capabilities $capabilities, ChromeOptions $options): void { }
     public function prepare(WebDriver $webdriver, ContainerBuilder $container): int { return static::CONTINUE; }
-    public function setParams(array $params): void
+    public function setParams(mixed $params): void
     {
         $this->params = $params;
     }
-    public function getParams(): array
+    public function getParams(): mixed
     {
         return $this->params;
     }

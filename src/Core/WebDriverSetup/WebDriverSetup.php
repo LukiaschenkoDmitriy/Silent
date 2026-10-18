@@ -91,6 +91,7 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         /** @var ModuleInterface $module */
         foreach ($this->modules as $module) {
             if (!$module->prepare($webdriver, $this->container)) {
+                $webdriver->closeSession();
                 return;
             }
         }
