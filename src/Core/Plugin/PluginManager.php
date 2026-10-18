@@ -3,6 +3,7 @@
 namespace Silent\Core\Plugin;
 
 use Silent\Core\Command\W3C\W3CSessionCommand;
+use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
 use Silent\Core\HttpExecutor\HttpExecutor;
 
@@ -29,10 +30,10 @@ class PluginManager implements PluginManagerInterface {
         $this->plugins = array_filter($this->plugins, fn(PluginInterface $p) => $p::class !== $pluginClass);
     }
 
-    public function processOptions(ChromeOptions $options): void
+    public function processCapabilitites(Capabilities $capabilities, ChromeOptions $options): void
     {
         foreach ($this->plugins as $plugin) {
-            $plugin->options($options);
+            $plugin->capabilities($capabilities, $options);
         }
     }
 

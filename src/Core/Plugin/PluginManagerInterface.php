@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Plugin;
 
+use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
 use Silent\Core\HttpExecutor\HttpExecutor;
 
@@ -13,6 +14,6 @@ interface PluginManagerInterface {
     public function getPlugins(): array;
     public function addPlugin(PluginInterface $plugin): void;
     public function removePlugin(string $pluginClass): void;
-    public function processOptions(ChromeOptions $options): void;
+    public function processCapabilitites(Capabilities $capabilities, ChromeOptions $options): void;
     public function processCommand(HttpExecutor $httpExecutor, string $sessionId): array;
 }

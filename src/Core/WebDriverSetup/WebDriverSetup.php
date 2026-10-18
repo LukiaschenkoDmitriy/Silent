@@ -50,7 +50,7 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
 
         /** @var ModuleInterface $module */
         foreach ($this->modules as $module) {
-            $module->capabilities($capabilities);
+            $module->capabilities($capabilities, $capabilities->alwaysMatch->chromeOptions);
         }
 
         $webdriver = $capabilities ? WebDriver::createSession($capabilities) : WebDriver::createSessionWithMinimalCapabilities();

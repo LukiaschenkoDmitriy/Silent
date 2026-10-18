@@ -50,12 +50,10 @@ class WebDriver implements WebDriverExecutorInterface, WebDriverSessionInterface
         if (isset($this->capabilities)) {
             if (!$this->capabilities->alwaysMatch) {
                 $this->capabilities->alwaysMatch = new CapabilityMatch();
+                $this->capabilities->alwaysMatch->chromeOptions = new ChromeOptions();
             }
 
-            $options = $this->capabilities->alwaysMatch->chromeOptions ?? new ChromeOptions();
-            $this->pluginManager->processOptions($options);
-
-            $options = $this->capabilities->alwaysMatch->chromeOptions = $options;
+            $this->pluginManager->processCapabilitites($this->capabilities, $this->capabilities->alwaysMatch->chromeOptions);
 
             $this->session = $this->executor->executeW3C(new NewSessionCommand($this->capabilities));
         }
