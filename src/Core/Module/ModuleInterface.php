@@ -2,10 +2,12 @@
 
 namespace Silent\Core\Module;
 
+use Silent\Core\WebDriver\WebDriver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface ModuleInterface {
     public function plugins(): array;
     public static function loadDefaultServices(ContainerBuilder $container): void;
     public static function container(ContainerBuilder $container): void;
+    public static function prepare(WebDriver $webDriver): void;
 }
