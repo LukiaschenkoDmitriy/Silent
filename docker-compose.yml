@@ -14,6 +14,8 @@ services:
 
   chrome:
     image: selenium/node-chrome:latest
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     shm_size: "2gb"
     depends_on:

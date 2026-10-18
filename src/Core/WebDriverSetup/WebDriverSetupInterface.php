@@ -17,4 +17,6 @@ interface WebDriverSetupInterface {
     public static function container(ContainerBuilder $container): void;
     public static function initSetup(ContainerBuilder $container): void;
     public function setModules(iterable $modules): void;
+    public function setContainer(ContainerBuilder $container): void;
+    public function getModule(string $moduleClass): object;
 }

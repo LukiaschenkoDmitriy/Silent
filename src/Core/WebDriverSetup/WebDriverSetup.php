@@ -14,6 +14,7 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_it
 
 abstract class WebDriverSetup implements WebDriverSetupInterface {
     private iterable $modules;
+    private ContainerBuilder $container;
     public function hub(): ?string
     {
         return null;
@@ -22,6 +23,16 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
     public function setupOptions(): WebDriverSetupOptions
     {
         return new WebDriverSetupOptions();
+    }
+
+    public function setContainer(ContainerBuilder $container): void
+    {
+        $this->container = $container;
+    }
+
+    public function getModule(string $moduleClass): object
+    {
+        return $this->container->get($moduleClass);
     }
 
     public function getWebDriver(): WebDriver
@@ -65,9 +76,9 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         return null;
     }
 
-    public function __invoke(ContainerBuilder $container)
+    public function __invoke()
     {
-        $this->run($this->getWebDriver(), $container);
+        $this->run($this->getWebDriver(), $this->container);
     }
 
     public function setModules(iterable $modules): void
