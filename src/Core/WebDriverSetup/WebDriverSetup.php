@@ -82,7 +82,7 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         
         /** @var ModuleInterface $module */
         foreach ($this->modules as $module) {
-            $module->prepare($webdriver);
+            $module->prepare($webdriver, $this->container);
         }
 
         $this->run($webdriver, $this->container);
