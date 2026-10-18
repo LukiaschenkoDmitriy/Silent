@@ -17,8 +17,8 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
 abstract class WebDriverSetup implements WebDriverSetupInterface {
+    public function __construct(private ContainerBuilder $container) { }
     private iterable $modules;
-    private ContainerBuilder $container;
     public function hub(): ?string
     {
         return null;
@@ -63,7 +63,14 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
             $webdriver->addPlugin($plugin);
         }
 
+        /** @var ModuleInterface $module */
         foreach ($this->modules as $module) {
+            $params = $this->passModuleParams($this->container);
+            
+            if (in_array($module::class, array_keys($params))) {
+                $module->setParams($params[$module::class]);
+            }
+        
             foreach ($module->plugins() as $plugin){
                 $webdriver->addPlugin($plugin);
             }
@@ -135,16 +142,12 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
                 $moduleClass::loadDefaultServices($container);
                 $moduleClass::container($container);
 
-                $moduleDef = $container->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true);
-                
-                if (in_array($moduleClass, array_keys(static::passModuleParams()))) {
-                    $moduleDef->addMethodCall("setParams", [static::passModuleParams()[$moduleClass]]);
-                }
+                $container->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true);
             }
         }
     }
 
-    public static function passModuleParams(): array
+    public function passModuleParams(ContainerBuilder $container): array
     {
         return [];
     }
