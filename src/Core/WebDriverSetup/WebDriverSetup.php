@@ -116,6 +116,8 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         return $this->modules;
     }
 
+    public function run(WebDriver $webdriver, ContainerBuilder $container): void { }
+
     public static function container(ContainerBuilder $container): void { 
         $projectDir = dirname((new \ReflectionClass(static::class))->getFileName(), 2);
         $container->setParameter("webdriver.project_dir", $projectDir);
