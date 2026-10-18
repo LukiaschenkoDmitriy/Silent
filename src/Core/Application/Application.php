@@ -13,6 +13,10 @@ abstract class Application implements ApplicationInterface {
 
         $projectDir = dirname((new \ReflectionClass(static::class))->getFileName(), 2);
         $container->setParameter("webdriver.project_dir", $projectDir);
+
+        if (file_exists($projectDir . "/config/services.php")) {
+            (new PhpFileLoader($container, new FileLocator($projectDir . "/config")))->load("services.php");
+        }
     }
 
     public function loadModules(): void {
