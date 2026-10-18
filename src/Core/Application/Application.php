@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Application;
 
+use Override;
 use Silent\Core\Module\Module;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -39,8 +40,11 @@ abstract class Application implements ApplicationInterface {
         }
     }
 
+    public static function container(ContainerBuilder $container): void { }
+
     public function __invoke()
     {
+        static::container($this->container);
         $this->loadModules();
         $this->container->compile(true);
         $this->run();
