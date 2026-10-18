@@ -8,8 +8,19 @@ final class ChromeOptions
 {
     public function __construct(
         #[Ignore] private array $features = [],
-        #[Ignore] private array $switches = []
+        #[Ignore] private array $switches = [],
+        #[Ignore] private array $excludeSwitches = []
     ) { }
+
+    public function setExcludeSwitches(array $switches): void
+    {
+        $this->excludeSwitches = $switches;
+    }
+
+    public function getExcludeSwitches(): array
+    {
+        return $this->excludeSwitches;
+    }
 
     public function setFeature(ChromeFeatures $feature): void
     {
