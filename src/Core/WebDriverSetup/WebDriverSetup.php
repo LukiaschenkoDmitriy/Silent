@@ -124,6 +124,7 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
             (new PhpFileLoader($container, new FileLocator($projectDir . "/config")))->load("services.php");
         }
 
+        $container->setAlias(ContainerBuilder::class, "service_container")->setPublic(true);
         $container->register(static::class, static::class)->addTag("webdriver.setup")->addMethodCall("setModules", [tagged_iterator("webdriver.module")])->setPublic(true)->setAutowired(true);
     }
 
