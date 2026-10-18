@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+
+<?php declare(strict_types=1);
+
+$autoloadPaths = [
+    __DIR__ . '/../../../autoload.php',
+    __DIR__ . '/../vendor/autoload.php',
+];
+
+foreach ($autoloadPaths as $file) {
+    if (is_file($file)) {
+        require $file;
+        break;
+    }
+}
+

@@ -5,6 +5,7 @@
             "Silent\\": "src/"
         }
     },
+    "bin": ["bin/silent"],
     "authors": [
         {
             "name": "Dmytrii Lukiashchenko",
@@ -22,6 +23,9 @@
     "require": {
         "php": ">=8.4",
         "symfony/http-client": "^8.1",
-        "symfony/serializer-pack": "^1.4"
+        "symfony/serializer-pack": "^1.4",
+        "symfony/console": "^8.1",
+        "symfony/config": "^8.1",
+        "symfony/dependency-injection": "^8.1"
     }
 }
