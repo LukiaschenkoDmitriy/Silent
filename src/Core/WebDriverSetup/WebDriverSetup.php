@@ -78,7 +78,14 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
 
     public function __invoke()
     {
-        $this->run($this->getWebDriver(), $this->container);
+        $webdriver = $this->getWebDriver();
+        
+        /** @var ModuleInterface $module */
+        foreach ($this->modules as $module) {
+            $module->prepare($webdriver);
+        }
+
+        $this->run($webdriver, $this->container);
     }
 
     public function setModules(iterable $modules): void
