@@ -48,13 +48,17 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
 
         $capabilities = $this->capabilities();
 
+        /** @var ModuleInterface $module */
+        foreach ($this->modules as $module) {
+            $module->capabilities($capabilities);
+        }
+
         $webdriver = $capabilities ? WebDriver::createSession($capabilities) : WebDriver::createSessionWithMinimalCapabilities();
 
         foreach ($this->plugins() as $plugin) {
             $webdriver->addPlugin($plugin);
         }
 
-        /** @var ModuleInterface $module */
         foreach ($this->modules as $module) {
             foreach ($module->plugins() as $plugin){
                 $webdriver->addPlugin($plugin);
