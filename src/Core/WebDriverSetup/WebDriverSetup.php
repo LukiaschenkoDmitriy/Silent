@@ -30,7 +30,7 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
 
         $options = $this->setupOptions();
 
-        if ($options->getFirstIfExists) {
+        if ($options && $options->getFirstIfExists) {
             $session = WebDriver::getFirstSession();
 
             if ($session) return $session;
