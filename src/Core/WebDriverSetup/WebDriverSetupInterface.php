@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 interface WebDriverSetupInterface {
     public function hub(): ?string;
     public function capabilities(): ?Capabilities;
-    public function setupOptions(): ?WebDriverSetupOptions;
+    public function setupOptions(): WebDriverSetupOptions;
     public function plugins(): array;
     public function getWebDriver(): WebDriver;
     public function run(WebDriver $webdriver): void;

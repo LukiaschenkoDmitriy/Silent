@@ -19,9 +19,9 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         return null;
     }
 
-    public function setupOptions(): ?WebDriverSetupOptions
+    public function setupOptions(): WebDriverSetupOptions
     {
-        return null;
+        return new WebDriverSetupOptions();
     }
 
     public function getWebDriver(): WebDriver
@@ -30,9 +30,8 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
 
         $options = $this->setupOptions();
 
-        if ($options && $options->getFirstIfExists) {
+        if ($options->getFirstIfExists) {
             $session = WebDriver::getFirstSession();
-
             if ($session) return $session;
         }
 
