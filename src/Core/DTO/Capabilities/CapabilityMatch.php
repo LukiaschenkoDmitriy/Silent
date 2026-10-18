@@ -13,7 +13,7 @@ final class CapabilityMatch {
     public function __construct(
         public ?BrowserName $browserName = null,
         #[SerializedName("goog:chromeOptions")] 
-        public ?ChromeOptions $chromeOptions = null,
+        public ?ChromeOptions $chromeOptions = new ChromeOptions(),
         public ?string $userAgent = null,
         public ?PageLoadStrategy $pageLoadStrategy = null,
         public ?Proxy $proxy = null,

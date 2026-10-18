@@ -4,7 +4,7 @@ namespace Silent\Core\DTO\Capabilities;
 
 final class Capabilities {
     public function __construct(
-        public ?CapabilityMatch $alwaysMatch = null,
+        public ?CapabilityMatch $alwaysMatch = new CapabilityMatch(),
         /**
          * @var array<CapabilityMatch> $alwaysMatch
          * @param CapabilityMatch[] $alwaysMatch
