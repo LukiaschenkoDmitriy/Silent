@@ -153,11 +153,13 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         return [];
     }
 
-    public static function initSetup(ContainerBuilder $container): void
+    public static function initSetup(ContainerBuilder $container): WebDriverSetup
     {
         static::container($container);
         static::loadModules($container);
 
         $container->compile(true);
+
+        return $container->get(static::class);
     }
 }
