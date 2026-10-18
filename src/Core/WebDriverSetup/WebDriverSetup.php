@@ -10,6 +10,8 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
+
 abstract class WebDriverSetup implements WebDriverSetupInterface {
     private iterable $modules;
     public function hub(): ?string
@@ -81,6 +83,8 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         if (file_exists($projectDir . "/config/services.php")) {
             (new PhpFileLoader($container, new FileLocator($projectDir . "/config")))->load("services.php");
         }
+
+        $container->register(static::class, static::class)->addTag("webdriver.setup")->addMethodCall("setModules", [tagged_iterator("webdriver.module")])->setPublic(true)->setAutowired(true);
     }
 
     public static function loadModules(ContainerBuilder $container): void {
