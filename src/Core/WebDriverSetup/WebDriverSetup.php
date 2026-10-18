@@ -101,7 +101,7 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
                 $moduleClass::loadDefaultServices($container);
                 $moduleClass::container($container);
 
-                $container->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module");
+                $container->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true);
             }
         }
     }
