@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 abstract class Module implements ModuleInterface {
     public function plugins(): array { return []; }
-    public function prepare(WebDriver $webDriver, ContainerBuilder $container): void { }
+    public function prepare(WebDriver $webdriver, ContainerBuilder $container): void { }
     public static function loadDefaultServices(ContainerBuilder $container): void
     {
         $moduleConfigDir = dirname((new \ReflectionClass(static::class))->getFileName(), 2) . "/config";

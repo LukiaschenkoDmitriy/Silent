@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 interface ModuleInterface {
     public function plugins(): array;
-    public function prepare(WebDriver $webDriver, ContainerBuilder $container): void;
+    public function prepare(WebDriver $webdriver, ContainerBuilder $container): void;
     public static function loadDefaultServices(ContainerBuilder $container): void;
     public static function container(ContainerBuilder $container): void;
 }
