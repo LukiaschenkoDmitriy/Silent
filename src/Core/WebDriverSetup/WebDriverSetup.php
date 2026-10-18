@@ -2,6 +2,7 @@
 
 namespace Silent\Core\WebDriverSetup;
 
+use Override;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\CapabilityMatch;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
@@ -89,7 +90,9 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         
         /** @var ModuleInterface $module */
         foreach ($this->modules as $module) {
-            $module->prepare($webdriver, $this->container);
+            if (!$module->prepare($webdriver, $this->container)) {
+                return;
+            }
         }
 
         $this->run($webdriver, $this->container);
@@ -131,9 +134,18 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
                 $moduleClass::loadDefaultServices($container);
                 $moduleClass::container($container);
 
-                $container->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true);
+                $moduleDef = $container->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true);
+                
+                if (in_array($moduleClass, array_keys(static::passModuleParams()))) {
+                    $moduleDef->addMethodCall("setParams", [static::passModuleParams()[$moduleClass]]);
+                }
             }
         }
+    }
+
+    public static function passModuleParams(): array
+    {
+        return [];
     }
 
     public static function initSetup(ContainerBuilder $container): void
