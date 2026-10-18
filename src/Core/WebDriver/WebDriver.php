@@ -46,6 +46,10 @@ class WebDriver implements WebDriverExecutorInterface, WebDriverSessionInterface
         $this->pluginManager = $pluginManager ?? new PluginManager();
     }
 
+    public function getCapabilitites(): ?Capabilities {
+        return isset($this->capabilities) ? $this->capabilities : null;
+    }
+
     public function initWebDriver(): WebDriver {
         if (isset($this->capabilities)) {
             if (!$this->capabilities->alwaysMatch) {
