@@ -7,7 +7,7 @@ final class JsFileBuilder
     /**
      * @param array<string, mixed> $parameters
      */
-    public function build(string $path, array $parameters = []): string
+    public static function build(string $path, array $parameters = []): string
     {
         if (!is_file($path) || !is_readable($path)) {
             throw new \InvalidArgumentException("Template not found: $path");
@@ -18,7 +18,7 @@ final class JsFileBuilder
         return preg_replace_callback(
             '/\{\{\s*([\w.]+)\s*(?:\|\s*(json|raw))?\s*\}\}/',
             function (array $m) use ($parameters, $path): string {
-                $value = $this->resolve($parameters, $m[1], $path);
+                $value = static::resolve($parameters, $m[1], $path);
                 $filter = $m[2] ?? 'raw';
 
                 if ($filter === 'json') {
@@ -41,7 +41,7 @@ final class JsFileBuilder
         );
     }
 
-    private function resolve(array $parameters, string $key, string $path): mixed
+    private static function resolve(array $parameters, string $key, string $path): mixed
     {
         $value = $parameters;
 
