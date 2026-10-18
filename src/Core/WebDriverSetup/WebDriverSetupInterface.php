@@ -12,7 +12,7 @@ interface WebDriverSetupInterface {
     public function setupOptions(): WebDriverSetupOptions;
     public function plugins(): array;
     public function getWebDriver(): WebDriver;
-    public function run(WebDriver $webdriver): void;
+    public function run(WebDriver $webdriver, ContainerBuilder $container): void;
     public static function loadModules(ContainerBuilder $container): void;
     public static function container(ContainerBuilder $container): void;
     public static function initSetup(ContainerBuilder $container): void;
