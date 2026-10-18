@@ -3,6 +3,9 @@
 namespace Silent\Core\WebDriverSetup;
 
 use Silent\Core\DTO\Capabilities\Capabilities;
+use Silent\Core\DTO\Capabilities\CapabilityMatch;
+use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
+use Silent\Core\DTO\Capabilities\Enum\BrowserName;
 use Silent\Core\Module\Module;
 use Silent\Core\Module\ModuleInterface;
 use Silent\Core\WebDriver\WebDriver;
@@ -75,9 +78,9 @@ abstract class WebDriverSetup implements WebDriverSetupInterface {
         return [];
     }
 
-    public function capabilities(): ?Capabilities
+    public function capabilities(): Capabilities
     {
-        return null;
+        return new Capabilities(new CapabilityMatch(BrowserName::CHROME, new ChromeOptions()));
     }
 
     public function __invoke()
