@@ -18,7 +18,15 @@ class ContainerLoader implements ContainerLoaderInterface {
         $plugins = $class::plugins();
 
         foreach ($plugins as $plugin => $params) {
-            $builder->register($plugin, $plugin)->addTag("webdriver.plugin")->setPublic(true)->setAutowired(true)->addMethodCall("setParams", [$params]);
+            $notParams = is_int($plugin);
+
+            $plugin = $notParams ? $params : $plugin;
+
+            $def = $builder->register($plugin, $plugin)->addTag("webdriver.plugin")->setPublic(true)->setAutowired(true);
+
+            if (!$notParams) {
+                $def->addMethodCall("setParams", [$params]);
+            }
         }
     }
 
@@ -43,12 +51,16 @@ class ContainerLoader implements ContainerLoaderInterface {
         $modules = $setupClass::modules($builder);
 
         foreach ($modules as $moduleClass => $params) {
+            $notParams = is_int($moduleClass);
+
+            $moduleClass = $notParams ? $params : $moduleClass;
+
             $moduleClass = (string) $moduleClass;
             if (!is_subclass_of($moduleClass, ModuleInterface::class)) {
                 continue;
             }
 
-            static::loadModule($builder, $moduleClass, $params);
+            static::loadModule($builder, $moduleClass, $notParams ? null : $params);
         }
 
         static::registerPlugins($builder, $setupClass);
