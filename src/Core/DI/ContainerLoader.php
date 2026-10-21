@@ -40,7 +40,7 @@ class ContainerLoader implements ContainerLoaderInterface {
 
         static::loadServices($builder, $setupDir);
 
-        $modules = $setupClass::modules();
+        $modules = $setupClass::modules($builder);
 
         foreach ($modules as $moduleClass => $params) {
             $moduleClass = (string) $moduleClass;
