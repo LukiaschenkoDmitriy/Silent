@@ -56,7 +56,7 @@ class ContainerLoader implements ContainerLoaderInterface {
         $builder->setAlias(ContainerInterface::class, "service_container")->setPublic(true);
         $builder->register($setupClass, $setupClass)->addTag("webdriver.setup")->setPublic(true)->setAutowired(true)
             ->addMethodCall("setModules", [tagged_iterator("webdriver.module")])
-            ->addMethodCall("setPlugins", [tagged_iterator("webdriver.plugins")]);
+            ->addMethodCall("setPlugins", [tagged_iterator("webdriver.plugin")]);
 
         $builder->compile(true);
     }
