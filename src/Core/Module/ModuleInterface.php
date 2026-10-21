@@ -5,14 +5,19 @@ namespace Silent\Core\Module;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
 use Silent\Core\WebDriver\WebDriver;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 interface ModuleInterface {
-    public function plugins(): array;
-    public function capabilities(Capabilities $capabilities, ChromeOptions $options): void;
-    public function prepare(WebDriver $webdriver, ContainerBuilder $container): int;
+    public static function plugins(): array;
+    public static function capabilities(Capabilities $capabilities, ChromeOptions $options): void;
+    /**
+     * Summary of load
+     * @return \Closure(ContainerBuilder, FileLocator): void;
+     */
+    public static function load(): \Closure;
+    public function run(WebDriver $webdriver, ContainerInterface $container): int;
     public function setParams(mixed $params): void;
     public function getParams(): mixed;
-    public static function loadDefaultServices(ContainerBuilder $container): void;
-    public static function container(ContainerBuilder $container): void;
 }

@@ -14,22 +14,21 @@ use Silent\Core\DTO\Capabilities\Enum\BrowserName;
 use Silent\Core\DTO\Session\Session;
 use Silent\Core\DTO\Status\Status;
 use Silent\Core\HttpExecutor\HttpExecutor;
+use Silent\Core\HttpExecutor\HttpExecutorInterface;
 use Silent\Core\Plugin\PluginInterface;
-use Silent\Core\Plugin\PluginManager;
-use Silent\Core\Plugin\PluginManagerInterface;
-use Silent\Core\Plugin\PluginProviderInterface;
+use Silent\Core\Plugin\PluginRegistry;
+use Silent\Core\Registry\RegistryInterface;
 
-class WebDriver implements WebDriverExecutorInterface, WebDriverSessionInterface, PluginProviderInterface {
+class WebDriver implements WebDriverInterface {
     private static string $url = "http://localhost:4444";
     private Session $session;
-    private HttpExecutor $executor;
-    private PluginManagerInterface $pluginManager;
+    private HttpExecutorInterface $executor;
+    private RegistryInterface $pluginRegistry;
     private Capabilities $capabilities;
     public function __construct(
-        HttpExecutor $httpExecutor,
+        HttpExecutorInterface $httpExecutor,
         ?Capabilities $capabilities = null, 
         ?Session $session = null,
-        ?PluginManagerInterface $pluginManager = null
     )
     {
         if ($session) {
@@ -43,27 +42,35 @@ class WebDriver implements WebDriverExecutorInterface, WebDriverSessionInterface
         }
         
         $this->executor = $httpExecutor;
-        $this->pluginManager = $pluginManager ?? new PluginManager();
+        $this->pluginRegistry = new PluginRegistry();
     }
 
     public function getCapabilitites(): ?Capabilities {
         return isset($this->capabilities) ? $this->capabilities : null;
     }
 
-    public function initWebDriver(): WebDriver {
+    public function init(): WebDriver {
         if (isset($this->capabilities)) {
             if (!$this->capabilities->alwaysMatch) {
                 $this->capabilities->alwaysMatch = new CapabilityMatch();
                 $this->capabilities->alwaysMatch->chromeOptions = new ChromeOptions();
             }
 
-            $this->pluginManager->processCapabilitites($this->capabilities, $this->capabilities->alwaysMatch->chromeOptions);
+            /** @var PluginInterface $plugin */
+            foreach($this->pluginRegistry as $plugin) {
+                $plugin->capabilities($this->capabilities, $this->capabilities->alwaysMatch->chromeOptions);
+            }
 
             $this->session = $this->executor->executeW3C(new NewSessionCommand($this->capabilities));
         }
 
-        $this->pluginManager->processCommand($this->executor, $this->session->sessionId);
-
+        /** @var PluginInterface $plugin */
+        foreach ($this->pluginRegistry as $plugin) {
+            /** @var W3CCommandInterface $command */
+            foreach ($plugin->commands() as $command) {
+                $this->executeW3C($command);
+            }
+        }
         return $this;
     }
 
@@ -81,19 +88,14 @@ class WebDriver implements WebDriverExecutorInterface, WebDriverSessionInterface
         return $this->session;
     }
 
+    public function plugins(): PluginRegistry
+    {
+        return $this->pluginRegistry;
+    }
+
     public function closeSession(): void
     {
         $this->executor->executeW3C(new DeleteSessionCommand($this->session->sessionId));
-    }
-
-    public function addPlugin(PluginInterface $plugin): void
-    {
-        $this->pluginManager->addPlugin($plugin);
-    }
-
-    public function removePlugin(string $pluginClass): void
-    {
-        $this->pluginManager->removePlugin($pluginClass);
     }
 
     public static function createSession(Capabilities $capabilities, ?string $url = null): self
@@ -109,7 +111,7 @@ class WebDriver implements WebDriverExecutorInterface, WebDriverSessionInterface
     public static function createSessionWithMinimalCapabilities(?string $url = null): self
     {
         return new self(new HttpExecutor($url ?? static::$url), new Capabilities(
-            null,
+            new CapabilityMatch(),
             [
                 new CapabilityMatch(BrowserName::CHROME),
                 new CapabilityMatch(BrowserName::FIREFOX),
@@ -193,8 +195,8 @@ class WebDriver implements WebDriverExecutorInterface, WebDriverSessionInterface
         }        
     }
 
-    public static function setUrl(string $url): void
+    public static function setHub(string $hub): void
     {
-        self::$url = $url;
+        self::$url = $hub;
     }
 }

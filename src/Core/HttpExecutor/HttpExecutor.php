@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class HttpExecutor {
+class HttpExecutor implements HttpExecutorInterface {
     private const DEFAULT_HTTP_HEADERES = [
         "Content-Type" => "application/json;charset=UTF-8",
         "Accept" => "application/json"
@@ -29,7 +29,7 @@ class HttpExecutor {
 
     public function __construct(string $url, array $headers = [])
     {
-        $this->serializer = $this->getSerializer();
+        $this->serializer = new Serializer($this->normalizers(), $this->encoders());
         $this->client = HttpClient::createForBaseUri($url, ["headers" => $headers ?? static::DEFAULT_HTTP_HEADERES]);
     }
 
@@ -59,15 +59,30 @@ class HttpExecutor {
         ]);
     }
 
-    private function getSerializer(): Serializer
+    public function getClient(): HttpClientInterface
+    {
+        return $this->client;
+    }
+
+    public function serializer(): Serializer
+    {
+        return $this->serializer;
+    }
+
+    public function normalizers(): array
     {
         $factory = new ClassMetadataFactory(new AttributeLoader());
         $nameConverter = new MetadataAwareNameConverter($factory);
         $extractor = new PropertyInfoExtractor([], [new PhpDocExtractor(), new ReflectionExtractor()]);
 
-        return new Serializer([
+        return [
             ...ActionsNormalizer::getActionsNormalizers(), new BackedEnumNormalizer(), new ArrayDenormalizer(), 
             new ObjectNormalizer($factory, $nameConverter, null, $extractor)
-        ],[new JsonEncoder()]);
+        ];
+    }
+
+    public function encoders(): array
+    {
+        return [new JsonEncoder()];
     }
 }
