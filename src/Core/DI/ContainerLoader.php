@@ -42,9 +42,9 @@ class ContainerLoader implements ContainerLoaderInterface {
 
         $modules = $setupClass::modules();
 
-        foreach ($modules as $moduleClass => $enabled) {
+        foreach ($modules as $moduleClass) {
             $moduleClass = (string) $moduleClass;
-            if (!$enabled || !is_subclass_of($moduleClass, ModuleInterface::class)) {
+            if (!is_subclass_of($moduleClass, ModuleInterface::class)) {
                 continue;
             }
 
