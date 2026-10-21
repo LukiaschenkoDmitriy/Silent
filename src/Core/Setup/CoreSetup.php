@@ -17,7 +17,7 @@ use Silent\Core\WebDriverSetup\SetupOptions;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class Setup implements SetupInterface {
+abstract class CoreSetup implements SetupInterface {
     public function __construct(private ContainerInterface $container) {
         $this->moduleRegistry = new ModuleRegistry();
         $this->pluginRegistry = new PluginRegistry();
