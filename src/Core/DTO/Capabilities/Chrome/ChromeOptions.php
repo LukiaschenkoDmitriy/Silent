@@ -10,7 +10,19 @@ final class ChromeOptions
         #[Ignore] private array $features = [],
         #[Ignore] private array $switches = [],
         public array $excludeSwitches = [],
+        public ?string $binary = null,
+        public array $extensions = [],
     ) { }
+
+    public function setBinary(string $binary): void
+    {
+        $this->binary = $binary;
+    }
+
+    public function setExtensions(array $extensions): void
+    {
+        $this->extensions = $extensions;
+    }
 
     public function setExcludeSwitches(array $switches): void
     {

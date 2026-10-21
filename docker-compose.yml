@@ -34,7 +34,7 @@ services:
     ports:
       - "7900:7900"
     volumes:
-      - ./chrome-profile:/home/seluser/profile
+      - ./local:/home/seluser/local
 
   postgres:
     image: postgres:17-alpine
