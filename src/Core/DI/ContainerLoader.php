@@ -22,7 +22,7 @@ class ContainerLoader implements ContainerLoaderInterface {
         }
     }
 
-    public static function loadModule(ContainerBuilder $builder, string $moduleClass): void
+    public static function loadModule(ContainerBuilder $builder, string $moduleClass, mixed $params = null): void
     {
         $moduleDir = dirname((new \ReflectionClass($moduleClass))->getFileName(), 2);
 
@@ -30,7 +30,7 @@ class ContainerLoader implements ContainerLoaderInterface {
         static::load($moduleClass::load(), $builder, $moduleDir);
 
         static::registerPlugins($builder, $moduleClass);
-        $builder->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true);
+        $builder->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true)->addMethodCall("setParams", [$params]);
     }
 
     public static function loadSetup(ContainerBuilder $builder, string $setupClass): void
@@ -42,13 +42,13 @@ class ContainerLoader implements ContainerLoaderInterface {
 
         $modules = $setupClass::modules();
 
-        foreach ($modules as $moduleClass) {
+        foreach ($modules as $moduleClass => $params) {
             $moduleClass = (string) $moduleClass;
             if (!is_subclass_of($moduleClass, ModuleInterface::class)) {
                 continue;
             }
 
-            static::loadModule($builder, $moduleClass);
+            static::loadModule($builder, $moduleClass, $params);
         }
 
         static::registerPlugins($builder, $setupClass);

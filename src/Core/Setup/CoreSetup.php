@@ -70,15 +70,6 @@ abstract class CoreSetup implements SetupInterface {
 
         $webdriver->plugins()->merge($this->pluginRegistry);
 
-        /** @var ModuleInterface $module */
-        foreach ($this->moduleRegistry as $module) {
-            $params = $this->passModuleParams($this->container);
-            
-            if (in_array($module::class, array_keys($params))) {
-                $module->setParams($params[$module::class]);
-            }
-        }
-
         $webdriver->init();
 
         return $webdriver;
@@ -137,7 +128,7 @@ abstract class CoreSetup implements SetupInterface {
         return [];
     }
 
-    public static function modules(): array
+    public static function modules(ContainerInterface $container): array
     {
         return [];
     }
