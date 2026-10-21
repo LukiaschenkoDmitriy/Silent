@@ -17,8 +17,8 @@ class ContainerLoader implements ContainerLoaderInterface {
     {
         $plugins = $class::plugins();
 
-        foreach ($plugins as $plugin) {
-            $builder->register($plugin, $plugin)->addTag("webdriver.plugin")->setPublic(true)->setAutowired(true);
+        foreach ($plugins as $plugin => $params) {
+            $builder->register($plugin, $plugin)->addTag("webdriver.plugin")->setPublic(true)->setAutowired(true)->addMethodCall("setParams", [$params]);
         }
     }
 
