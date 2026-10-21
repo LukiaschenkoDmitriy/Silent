@@ -7,6 +7,7 @@ use Override;
 use Silent\Core\Module\ModuleInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
@@ -52,7 +53,7 @@ class ContainerLoader implements ContainerLoaderInterface {
 
         static::registerPlugins($builder, $setupClass);
 
-        $builder->setAlias(ContainerBuilder::class, "service_container")->setPublic(true);
+        $builder->setAlias(ContainerInterface::class, "service_container")->setPublic(true);
         $builder->register($setupClass, $setupClass)->addTag("webdriver.setup")->setPublic(true)->setAutowired(true)
             ->addMethodCall("setModules", [tagged_iterator("webdriver.module")])
             ->addMethodCall("setPlugins", [tagged_iterator("webdriver.plugins")]);
