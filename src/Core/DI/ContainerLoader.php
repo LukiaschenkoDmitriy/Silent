@@ -79,6 +79,6 @@ class ContainerLoader implements ContainerLoaderInterface {
      */
     public static function load(Closure $closure, ContainerBuilder $builder, string $dir): void
     {
-        return $closure($builder, new FileLocator($dir . "/config"));
+        $closure($builder, new FileLocator($dir . "/config"));
     }
 }
