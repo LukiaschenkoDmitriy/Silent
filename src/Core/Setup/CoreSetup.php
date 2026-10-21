@@ -13,7 +13,6 @@ use Silent\Core\Plugin\PluginRegistry;
 use Silent\Core\Registry\RegistryInterface;
 use Silent\Core\WebDriver\WebDriver;
 use Silent\Core\WebDriver\WebDriverInterface;
-use Silent\Core\WebDriverSetup\SetupOptions;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -40,7 +39,7 @@ abstract class CoreSetup implements SetupInterface {
             /**
              * @var SetupOptions $attribute
              */
-            $attribute = $attributes[0];
+            $attribute = $attributes[0]->newInstance();
             $flags = $attribute->flags;
 
             if ($flags & SetupOptions::GET_EXISTED_SESSION_OR_CREATE) {

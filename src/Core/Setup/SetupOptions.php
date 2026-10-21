@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\WebDriverSetup;
+namespace Silent\Core\Setup;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final class SetupOptions {
