@@ -16,7 +16,6 @@ interface SetupInterface {
     public function run(WebDriverInterface $webdriver, ContainerInterface $container): void;
     public static function init(ContainerBuilder $builder): WebDriverInterface;
     public static function passModuleParams(ContainerInterface $container): array;
-    public function setContainer(ContainerInterface $container): void;
     public function setPlugins(iterable $plugins): void;
     public function moduleRegistry(): ModuleRegistry;
     public function pluginRegistry(): PluginRegistry;
