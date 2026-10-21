@@ -133,11 +133,6 @@ abstract class CoreSetup implements SetupInterface {
         return [];
     }
 
-    public static function passModuleParams(ContainerInterface $container): array
-    {
-        return [];
-    }
-
     public static function init(ContainerBuilder $builder): SetupInterface
     {
         ContainerLoader::loadSetup($builder, static::class);
