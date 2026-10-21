@@ -147,10 +147,13 @@ abstract class CoreSetup implements SetupInterface {
         return [];
     }
 
-    public static function init(ContainerBuilder $builder): WebDriverInterface
+    public static function init(ContainerBuilder $builder): SetupInterface
     {
         ContainerLoader::loadSetup($builder, static::class);
+        
+        $setup = $builder->get(static::class);
+        $setup->__invoke();
 
-        return $builder->get(static::class)->__invoke();
+        return $setup;
     }
 }
