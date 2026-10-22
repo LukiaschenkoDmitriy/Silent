@@ -3,8 +3,8 @@
 namespace Silent\Core\DI;
 
 use Closure;
-use Override;
 use Silent\Core\Module\ModuleInterface;
+use Silent\Core\Setup\SetupInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +15,10 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_it
 class ContainerLoader implements ContainerLoaderInterface {
     public static function registerPlugins(ContainerBuilder $builder, string $class): void
     {
+        if (!is_a($class, ModuleInterface::class, true) && !is_a($class, SetupInterface::class, true)) {
+            throw new \InvalidArgumentException(sprintf("Class %s not implements ModuleInterface or SetupInterface", $class));
+        }
+
         $plugins = $class::plugins();
 
         foreach ($plugins as $plugin => $params) {
@@ -32,6 +36,10 @@ class ContainerLoader implements ContainerLoaderInterface {
 
     public static function loadModule(ContainerBuilder $builder, string $moduleClass, mixed $params = null): void
     {
+        if (!is_a($moduleClass, ModuleInterface::class, true)) {
+            throw new \InvalidArgumentException(sprintf("Class %s not implements ModuleInterface", $moduleClass));
+        }
+
         $moduleDir = dirname((new \ReflectionClass($moduleClass))->getFileName(), 2);
 
         static::loadServices($builder, $moduleDir);
@@ -43,6 +51,10 @@ class ContainerLoader implements ContainerLoaderInterface {
 
     public static function loadSetup(ContainerBuilder $builder, string $setupClass): void
     {
+        if (!is_a($setupClass, SetupInterface::class, true)) {
+            throw new \InvalidArgumentException(sprintf("Class %s not implements SetupInterface", $setupClass));
+        }
+
         $setupDir = dirname((new \ReflectionClass($setupClass))->getFileName(), 2);
         $builder->setParameter("webdriver.project_dir", $setupDir);
 
@@ -57,7 +69,7 @@ class ContainerLoader implements ContainerLoaderInterface {
 
             $moduleClass = (string) $moduleClass;
             if (!is_subclass_of($moduleClass, ModuleInterface::class)) {
-                continue;
+                throw new \InvalidArgumentException(sprintf("Module %s not implements ModuleInterface", $moduleClass));
             }
 
             static::loadModule($builder, $moduleClass, $notParams ? null : $params);

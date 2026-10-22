@@ -2,7 +2,8 @@
     "name": "avangward/silent",
     "autoload": {
         "psr-4": {
-            "Silent\\": "src/"
+            "Silent\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "bin": ["bin/silent"],
@@ -27,5 +28,8 @@
         "symfony/console": "^8.1",
         "symfony/config": "^8.1",
         "symfony/dependency-injection": "^8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13"
     }
 }

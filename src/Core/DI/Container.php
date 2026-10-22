@@ -12,6 +12,10 @@ final class Container extends ContainerBuilder {
     {
         parent::__construct($parameterBag);
 
-        (new PhpFileLoader($this, new FileLocator(dirname(__DIR__, 3) . "/config")))->load("services.php");
+        $configDir = dirname(__DIR__, 3) . "/config";
+
+        if (file_exists($configDir . "/services.php")) {
+            (new PhpFileLoader($this, new FileLocator($configDir)))->load("services.php");
+        }
     }
 }
