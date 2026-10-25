@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 final class CapabilityMatch {
     public function __construct(
-        public ?BrowserName $browserName = null,
+        public ?BrowserName $browserName = BrowserName::CHROME,
         #[SerializedName("goog:chromeOptions")] 
         public ?ChromeOptions $chromeOptions = new ChromeOptions(),
         public ?string $userAgent = null,

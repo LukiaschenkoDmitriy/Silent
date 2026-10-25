@@ -4,11 +4,10 @@ namespace Silent\Core\DTO\Capabilities;
 
 final class Capabilities {
     public function __construct(
-        public ?CapabilityMatch $alwaysMatch = new CapabilityMatch(),
+        public ?CapabilityMatch $alwaysMatch,
         /**
          * @var array<CapabilityMatch> $alwaysMatch
          * @param CapabilityMatch[] $alwaysMatch
          */
-        public ?array $firstMatch = null
     ) {}
 }

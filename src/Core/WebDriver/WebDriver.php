@@ -10,7 +10,6 @@ use Silent\Core\Command\W3C\W3CSessionCommand;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\CapabilityMatch;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
-use Silent\Core\DTO\Capabilities\Enum\BrowserName;
 use Silent\Core\DTO\Session\Session;
 use Silent\Core\DTO\Status\Status;
 use Silent\Core\HttpExecutor\HttpExecutor;
@@ -111,13 +110,7 @@ class WebDriver implements WebDriverInterface {
     public static function createSessionWithMinimalCapabilities(?string $url = null): self
     {
         return new self(new HttpExecutor($url ?? static::$url), new Capabilities(
-            new CapabilityMatch(),
-            [
-                new CapabilityMatch(BrowserName::CHROME),
-                new CapabilityMatch(BrowserName::FIREFOX),
-                new CapabilityMatch(BrowserName::MICROSOFT_EDGE),
-                new CapabilityMatch(BrowserName::SAFARI)
-            ],
+            new CapabilityMatch()
         ));
     }
 
