@@ -2,6 +2,7 @@
 
 namespace Silent\Core\WebDriver;
 
+use Override;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;
@@ -42,6 +43,11 @@ class WebDriver implements WebDriverInterface {
         
         $this->executor = $httpExecutor;
         $this->pluginRegistry = new PluginRegistry();
+    }
+
+    public function getExecutor(): HttpExecutorInterface
+    {
+        return $this->executor;
     }
 
     public function getCapabilitites(): ?Capabilities {

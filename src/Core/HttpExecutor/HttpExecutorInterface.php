@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface HttpExecutorInterface {
@@ -24,4 +25,5 @@ interface HttpExecutorInterface {
      * @return array<EncoderInterface&DecoderInterface>
      */
     public function encoders(): array;
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher): void;
 }

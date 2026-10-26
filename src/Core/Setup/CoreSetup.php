@@ -15,6 +15,7 @@ use Silent\Core\WebDriver\WebDriver;
 use Silent\Core\WebDriver\WebDriverInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class CoreSetup implements SetupInterface {
     public function __construct(private ContainerInterface $container) {
@@ -53,6 +54,11 @@ abstract class CoreSetup implements SetupInterface {
             if ($flags & SetupOptions::ONLY_GET_EXISTED) {
                 return WebDriver::getFirstSession();
             }
+            
+            if ($flags & SetupOptions::CLOSE_ALL_AND_CREATE_NEW) {
+                WebDriver::closeAllSessions();
+                return $this->getWebDriverWithCapabilitites();
+            }
         }
 
         return $this->getWebDriverWithCapabilitites();
@@ -67,6 +73,8 @@ abstract class CoreSetup implements SetupInterface {
         }
 
         $webdriver = WebDriver::createSession($capabilities);
+
+        $webdriver->getExecutor()->setEventDispatcher($this->container->get(EventDispatcherInterface::class));
 
         $webdriver->plugins()->merge($this->pluginRegistry);
 

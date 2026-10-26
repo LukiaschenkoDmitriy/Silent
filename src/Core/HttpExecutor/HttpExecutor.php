@@ -3,6 +3,8 @@
 namespace Silent\Core\HttpExecutor;
 
 use Silent\Core\Command\W3C\W3CCommandInterface;
+use Silent\Core\HttpExecutor\Events\W3CommandEvent;
+use Silent\Core\HttpExecutor\Events\W3CommandResultEvent;
 use Silent\Core\Normalizer\Actions\ActionsNormalizer;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
@@ -17,6 +19,7 @@ use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpExecutor implements HttpExecutorInterface {
@@ -26,6 +29,7 @@ class HttpExecutor implements HttpExecutorInterface {
     ];
     private HttpClientInterface $client;
     private Serializer $serializer;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(string $url, array $headers = [])
     {
@@ -33,11 +37,19 @@ class HttpExecutor implements HttpExecutorInterface {
         $this->client = HttpClient::createForBaseUri($url, ["headers" => $headers ?? static::DEFAULT_HTTP_HEADERES]);
     }
 
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher): void {
+        $this->dispatcher = $dispatcher;
+    }
+
     public function executeW3C(W3CCommandInterface $command): mixed 
     {
         $unpackedParams = $command->transformParams($this->serializer->normalize($command, "json", $command->skipNullValue() ? [
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true
         ]: []));
+
+        if (isset($this->dispatcher)) {
+            $unpackedParams = $this->dispatcher->dispatch(new W3CommandEvent($command, $unpackedParams))->params;
+        }
 
         $response = $this->client->request($command->method(), $command->url(), [
             "json" => $unpackedParams
@@ -54,9 +66,15 @@ class HttpExecutor implements HttpExecutorInterface {
             return $json;
         }
 
-        return $this->serializer->denormalize($json, $command->result(), "json", [
+        $result = $this->serializer->denormalize($json, $command->result(), "json", [
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true
         ]);
+
+        if (isset($this->dispatcher)) {
+            $result = $this->dispatcher->dispatch(new W3CommandResultEvent($command, $result))->result;
+        }
+
+        return $result;
     }
 
     public function getClient(): HttpClientInterface
