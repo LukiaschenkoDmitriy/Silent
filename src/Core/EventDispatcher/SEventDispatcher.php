@@ -5,10 +5,7 @@ namespace Silent\Core\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 final class SEventDispatcher extends EventDispatcher {
-    public function __construct(iterable $subscribers)
-    {
-        parent::__construct();
-
+    public function registerSubscribers(iterable $subscribers) {
         foreach ($subscribers as $subscriber) {
             $this->addSubscriber($subscriber);
         }
