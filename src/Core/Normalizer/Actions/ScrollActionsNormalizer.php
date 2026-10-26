@@ -3,7 +3,6 @@
 namespace Silent\Core\Normalizer\Actions;
 
 use ArrayObject;
-use Override;
 use Silent\Core\DTO\Actions\Enum\OriginType;
 use Silent\Core\DTO\Actions\Pause;
 use Silent\Core\DTO\Actions\Scroll\ScrollActions;

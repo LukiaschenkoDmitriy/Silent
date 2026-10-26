@@ -2,9 +2,11 @@
 
 namespace Silent\Core\HttpExecutor;
 
+use Silent\Core\Command\W3C\Events\W3CommandEvent;
+use Silent\Core\Command\W3C\Events\W3CommandResultEvent;
 use Silent\Core\Command\W3C\W3CCommandInterface;
-use Silent\Core\HttpExecutor\Events\W3CommandEvent;
-use Silent\Core\HttpExecutor\Events\W3CommandResultEvent;
+use Silent\Core\HttpExecutor\Events\GetEncodersEvent;
+use Silent\Core\HttpExecutor\Events\GetNormalizersEvent;
 use Silent\Core\Normalizer\Actions\ActionsNormalizer;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
@@ -93,14 +95,28 @@ class HttpExecutor implements HttpExecutorInterface {
         $nameConverter = new MetadataAwareNameConverter($factory);
         $extractor = new PropertyInfoExtractor([], [new PhpDocExtractor(), new ReflectionExtractor()]);
 
-        return [
-            ...ActionsNormalizer::getActionsNormalizers(), new BackedEnumNormalizer(), new ArrayDenormalizer(), 
+        $normalizers = [
+            ...ActionsNormalizer::getActionsNormalizers(),
+            new BackedEnumNormalizer(),
+            new ArrayDenormalizer(),
             new ObjectNormalizer($factory, $nameConverter, null, $extractor)
         ];
+
+        if (isset($this->dispatcher)) {
+            $normalizers = $this->dispatcher->dispatch(new GetNormalizersEvent(static::class, $normalizers))->normalizers;
+        }
+
+        return $normalizers;
     }
 
     public function encoders(): array
     {
-        return [new JsonEncoder()];
+        $encoders = [new JsonEncoder()];
+
+        if (isset($this->dispatcher)) {
+            $encoders = $this->dispatcher->dispatch(new GetEncodersEvent(static::class, $encoders))->encoders;
+        }
+
+        return $encoders;
     }
 }

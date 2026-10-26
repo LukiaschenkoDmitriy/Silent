@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\HttpExecutor\Events;
+namespace Silent\Core\Command\W3C\Events;
 
 use Silent\Core\Command\W3C\W3CCommandInterface;
 use Symfony\Contracts\EventDispatcher\Event;
