@@ -18,5 +18,5 @@ return static function (ContainerConfigurator $container): void {
         ->autoconfigure()
         ->private();
 
-    $services->set(EventDispatcherInterface::class, SEventDispatcher::class)->call("registerSubscribers", [tagged_iterator("webdriver.subscriber")]);
+    $services->set(EventDispatcherInterface::class, SEventDispatcher::class)->call("registerSubscribers", [tagged_iterator("webdriver.subscriber")])->public();
 };
