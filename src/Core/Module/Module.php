@@ -30,8 +30,4 @@ class Module implements ModuleInterface {
             return;
         };
     }
-    public static function plugins(): array
-    {
-        return [];
-    }
 }

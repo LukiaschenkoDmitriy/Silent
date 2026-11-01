@@ -10,5 +10,4 @@ interface ContainerLoaderInterface {
     public static function load(Closure $closure, ContainerBuilder $builder, string $dir): void;
     public static function loadModule(ContainerBuilder $builder, string $moduleClass, mixed $params): void;
     public static function loadSetup(ContainerBuilder $builder, string $setupClass): void;
-    public static function registerPlugins(ContainerBuilder $builder, string $class): void;
 }

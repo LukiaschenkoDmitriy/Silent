@@ -9,7 +9,6 @@ use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
 use Silent\Core\DTO\Capabilities\Enum\BrowserName;
 use Silent\Core\Module\ModuleInterface;
 use Silent\Core\Module\ModuleRegistry;
-use Silent\Core\Plugin\PluginRegistry;
 use Silent\Core\Registry\RegistryInterface;
 use Silent\Core\WebDriver\WebDriver;
 use Silent\Core\WebDriver\WebDriverInterface;
@@ -18,12 +17,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 abstract class CoreSetup implements SetupInterface {
+    private RegistryInterface $moduleRegistry;
     public function __construct(private ContainerInterface $container) {
         $this->moduleRegistry = new ModuleRegistry();
-        $this->pluginRegistry = new PluginRegistry();
     }
-    private RegistryInterface $moduleRegistry;
-    private RegistryInterface $pluginRegistry;
     public function hub(): ?string
     {
         return null;
@@ -31,7 +28,8 @@ abstract class CoreSetup implements SetupInterface {
 
     public function getWebDriver(): WebDriver
     {
-        if ($this->hub()) WebDriver::setHub($this->hub());
+        if ($this->hub())
+            WebDriver::setHub($this->hub());
 
         $class = new \ReflectionClass(static::class);
         $attributes = $class->getAttributes(SetupOptions::class);
@@ -45,7 +43,8 @@ abstract class CoreSetup implements SetupInterface {
 
             if ($flags & SetupOptions::GET_EXISTED_SESSION_OR_CREATE) {
                 $session = WebDriver::getFirstSession();
-                if ($session) return $session;
+                if ($session)
+                    return $session;
                 else {
                     return $this->getWebDriverWithCapabilitites();
                 }
@@ -54,7 +53,7 @@ abstract class CoreSetup implements SetupInterface {
             if ($flags & SetupOptions::ONLY_GET_EXISTED) {
                 return WebDriver::getFirstSession();
             }
-            
+
             if ($flags & SetupOptions::CLOSE_ALL_AND_CREATE_NEW) {
                 WebDriver::closeAllSessions();
                 return $this->getWebDriverWithCapabilitites();
@@ -75,8 +74,6 @@ abstract class CoreSetup implements SetupInterface {
         $webdriver = WebDriver::createSession($capabilities);
 
         $webdriver->getExecutor()->setEventDispatcher($this->container->get(EventDispatcherInterface::class));
-
-        $webdriver->plugins()->merge($this->pluginRegistry);
 
         $webdriver->init();
 
@@ -105,35 +102,13 @@ abstract class CoreSetup implements SetupInterface {
         return $webdriver;
     }
 
-    public function pluginRegistry(): PluginRegistry
-    {
-        return $this->pluginRegistry;
-    }
-
-    public function moduleRegistry(): ModuleRegistry
-    {
-        return $this->moduleRegistry;
-    }
-
     public function run(WebDriverInterface $webdriver, ContainerInterface $container): void { }
-
-    public function setPlugins(iterable $plugins): void
-    {
-        foreach ($plugins as $plugin) {
-            $this->pluginRegistry->add($plugin::class, $plugin);
-        }
-    }
 
     public function setModules(iterable $modules): void
     {
         foreach ($modules as $module) {
             $this->moduleRegistry->add($module::class, $module);
         }
-    }
-
-    public static function plugins(): array
-    {
-        return [];
     }
 
     public static function modules(ContainerInterface $container): array

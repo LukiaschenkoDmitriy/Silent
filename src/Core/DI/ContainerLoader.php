@@ -13,27 +13,6 @@ use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
 class ContainerLoader implements ContainerLoaderInterface {
-    public static function registerPlugins(ContainerBuilder $builder, string $class): void
-    {
-        if (!is_a($class, ModuleInterface::class, true) && !is_a($class, SetupInterface::class, true)) {
-            throw new \InvalidArgumentException(sprintf("Class %s not implements ModuleInterface or SetupInterface", $class));
-        }
-
-        $plugins = $class::plugins();
-
-        foreach ($plugins as $plugin => $params) {
-            $notParams = is_int($plugin);
-
-            $plugin = $notParams ? $params : $plugin;
-
-            $def = $builder->register($plugin, $plugin)->addTag("webdriver.plugin")->setPublic(true)->setAutowired(true);
-
-            if (!$notParams) {
-                $def->addMethodCall("setParams", [$params]);
-            }
-        }
-    }
-
     public static function loadModule(ContainerBuilder $builder, string $moduleClass, mixed $params = null): void
     {
         if (!is_a($moduleClass, ModuleInterface::class, true)) {
@@ -45,7 +24,6 @@ class ContainerLoader implements ContainerLoaderInterface {
         static::loadServices($builder, $moduleDir);
         static::load($moduleClass::load(), $builder, $moduleDir);
 
-        static::registerPlugins($builder, $moduleClass);
         $builder->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true)->addMethodCall("setParams", [$params]);
     }
 
@@ -75,12 +53,9 @@ class ContainerLoader implements ContainerLoaderInterface {
             static::loadModule($builder, $moduleClass, $notParams ? null : $params);
         }
 
-        static::registerPlugins($builder, $setupClass);
-
         $builder->setAlias(ContainerInterface::class, "service_container")->setPublic(true);
         $builder->register($setupClass, $setupClass)->addTag("webdriver.setup")->setPublic(true)->setAutowired(true)
-            ->addMethodCall("setModules", [tagged_iterator("webdriver.module")])
-            ->addMethodCall("setPlugins", [tagged_iterator("webdriver.plugin")]);
+            ->addMethodCall("setModules", [tagged_iterator("webdriver.module")]);
 
         $builder->compile(true);
     }

@@ -2,7 +2,6 @@
 
 namespace Silent\Core\WebDriver;
 
-use Override;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;
@@ -23,7 +22,6 @@ class WebDriver implements WebDriverInterface {
     private static string $url = "http://localhost:4444";
     private Session $session;
     private HttpExecutorInterface $executor;
-    private RegistryInterface $pluginRegistry;
     private Capabilities $capabilities;
     public function __construct(
         HttpExecutorInterface $httpExecutor,
@@ -42,7 +40,6 @@ class WebDriver implements WebDriverInterface {
         }
         
         $this->executor = $httpExecutor;
-        $this->pluginRegistry = new PluginRegistry();
     }
 
     public function getExecutor(): HttpExecutorInterface
@@ -61,21 +58,9 @@ class WebDriver implements WebDriverInterface {
                 $this->capabilities->alwaysMatch->chromeOptions = new ChromeOptions();
             }
 
-            /** @var PluginInterface $plugin */
-            foreach($this->pluginRegistry as $plugin) {
-                $plugin->capabilities($this->capabilities, $this->capabilities->alwaysMatch->chromeOptions);
-            }
-
             $this->session = $this->executor->executeW3C(new NewSessionCommand($this->capabilities));
         }
 
-        /** @var PluginInterface $plugin */
-        foreach ($this->pluginRegistry as $plugin) {
-            /** @var W3CCommandInterface $command */
-            foreach ($plugin->commands() as $command) {
-                $this->executeW3C($command);
-            }
-        }
         return $this;
     }
 
@@ -91,11 +76,6 @@ class WebDriver implements WebDriverInterface {
     public function getSession(): Session
     {
         return $this->session;
-    }
-
-    public function plugins(): PluginRegistry
-    {
-        return $this->pluginRegistry;
     }
 
     public function closeSession(): void

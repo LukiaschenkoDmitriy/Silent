@@ -10,7 +10,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 interface ModuleInterface {
-    public static function plugins(): array;
     public static function capabilities(Capabilities $capabilities, ChromeOptions $options): void;
     /**
      * Summary of load
