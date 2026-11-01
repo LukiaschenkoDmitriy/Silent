@@ -2,13 +2,14 @@
 
 namespace Silent\Core\Command\Scope\W3C;
 
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Navigation\GetCurrentUrlCommand;
 use Silent\Core\Command\W3C\Navigation\NavigateBackCommand;
 use Silent\Core\Command\W3C\Navigation\NavigateForwardCommand;
 use Silent\Core\Command\W3C\Navigation\NavigateToCommand;
 use Silent\Core\Command\W3C\Navigation\RefreshPageCommand;
 
-class W3CNavigationScope extends AbstractW3CScope {
+class W3CNavigationScope extends AbstractScope {
     public function currentUrl(): string
     {
         return $this->e->execute(new GetCurrentUrlCommand($this->s));

@@ -2,11 +2,12 @@
 
 namespace Silent\Core\Command\Scope\W3C;
 
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Timeouts\GetTimeoutsCommand;
 use Silent\Core\Command\W3C\Timeouts\SetTimeoutsCommand;
 use Silent\Core\DTO\Capabilities\Timeouts;
 
-class W3CTimeoutScope extends AbstractW3CScope {
+class W3CTimeoutScope extends AbstractScope {
     public function set(Timeouts $timeouts): void
     {
         $this->e->execute(new SetTimeoutsCommand($timeouts, $this->s));

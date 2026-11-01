@@ -2,12 +2,13 @@
 
 namespace Silent\Core\Command\Scope\W3C;
 
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Alert\AlertAcceptCommand;
 use Silent\Core\Command\W3C\Alert\AlertDismissCommand;
 use Silent\Core\Command\W3C\Alert\AlertSendTextCommand;
 use Silent\Core\Command\W3C\Alert\GetAllertTextCommand;
 
-class W3CAlertScope extends AbstractW3CScope {
+class W3CAlertScope extends AbstractScope {
     public function accept(): void
     {
         $this->e->execute(new AlertAcceptCommand($this->s));

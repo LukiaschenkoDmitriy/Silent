@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Command\Scope\W3C;
 
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Window\CloseCurrentWindowCommand;
 use Silent\Core\Command\W3C\Window\CreateWindowCommand;
 use Silent\Core\Command\W3C\Window\FullscreenWindowCommand;
@@ -15,7 +16,7 @@ use Silent\Core\DTO\Window\Window;
 use Silent\Core\DTO\Window\WindowRect;
 use Silent\Core\DTO\Window\WindowType;
 
-class W3CWindowScope extends AbstractW3CScope {
+class W3CWindowScope extends AbstractScope {
     public function closeCurrent(): void
     {
         $this->e->execute(new CloseCurrentWindowCommand($this->s));

@@ -2,11 +2,12 @@
 
 namespace Silent\Core\Command\Scope\W3C;
 
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Location\GetLocationCommand;
 use Silent\Core\Command\W3C\Location\SetLocationCommand;
 use Silent\Core\DTO\Location\Location;
 
-class W3CLocationScope extends AbstractW3CScope {
+class W3CLocationScope extends AbstractScope {
     public function getLocation(): Location
     {
         return $this->e->execute(new GetLocationCommand($this->s));

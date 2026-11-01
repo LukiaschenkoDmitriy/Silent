@@ -2,8 +2,7 @@
 
 namespace Silent\Core\Command\Scope\W3C\Element;
 
-use Override;
-use Silent\Core\Command\Scope\W3C\AbstractW3CScope;
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Element\Action\ElementChangeValueCommand;
 use Silent\Core\Command\W3C\Element\Action\ElementClearCommand;
 use Silent\Core\Command\W3C\Element\Action\ElementClickCommand;
@@ -11,7 +10,7 @@ use Silent\Core\Command\W3C\Element\IsElementEnabledCommand;
 use Silent\Core\Command\W3C\Element\IsElementSelectedCommand;
 use Silent\Core\HttpExecutor\HttpExecutorInterface;
 
-class W3CElementScope extends AbstractW3CScope {
+class W3CElementScope extends AbstractScope {
     public W3CGetElementScope $get;
     public W3CFindElementScope $find;
     public function __construct(HttpExecutorInterface $e, string $s)

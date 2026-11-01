@@ -3,6 +3,7 @@
 namespace Silent\Core\Module;
 
 use Closure;
+use Silent\Core\Command\Scope\Scope;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
 use Silent\Core\WebDriver\WebDriver;
@@ -22,7 +23,7 @@ class Module implements ModuleInterface {
     {
         return $this->params;
     }
-    public function run(WebDriver $webdriver, ContainerInterface $container): int { return static::CONTINUE; }
+    public function run(WebDriver $webdriver, Scope $actions, ContainerInterface $container): int { return static::CONTINUE; }
     public static function capabilities(Capabilities $capabilities, ChromeOptions $options): void { }
     public static function load(): Closure
     {

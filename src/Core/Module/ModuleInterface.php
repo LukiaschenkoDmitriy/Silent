@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Module;
 
+use Silent\Core\Command\Scope\Scope;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
 use Silent\Core\WebDriver\WebDriver;
@@ -16,7 +17,7 @@ interface ModuleInterface {
      * @return \Closure(ContainerBuilder, FileLocator): void;
      */
     public static function load(): \Closure;
-    public function run(WebDriver $webdriver, ContainerInterface $container): int;
+    public function run(WebDriver $webdriver, Scope $actions, ContainerInterface $container): int;
     public function setParams(mixed $params): void;
     public function getParams(): mixed;
 }

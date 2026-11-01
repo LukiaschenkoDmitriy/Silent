@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope\W3C;
+namespace Silent\Core\Command\Scope;
 
 use Silent\Core\HttpExecutor\HttpExecutorInterface;
 
-abstract class AbstractW3CScope {
+abstract class AbstractScope {
     public function __construct(
         protected HttpExecutorInterface $e,
         protected string $s

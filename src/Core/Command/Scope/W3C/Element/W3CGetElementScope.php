@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Command\Scope\W3C\Element;
 
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\Scope\W3C\AbstractW3CScope;
 use Silent\Core\Command\W3C\Element\Get\GetActiveElementCommand;
 use Silent\Core\Command\W3C\Element\Get\GetElementAttributeCommand;
@@ -13,7 +14,7 @@ use Silent\Core\Command\W3C\Element\Get\GetElementRectCommand;
 use Silent\Core\Command\W3C\Element\Get\GetElementTextCommand;
 use Silent\Core\DTO\Window\WindowRect;
 
-class W3CGetElementScope extends AbstractW3CScope {
+class W3CGetElementScope extends AbstractScope {
     public function activeElement(): string
     {
         return $this->e->execute(new GetActiveElementCommand($this->s));

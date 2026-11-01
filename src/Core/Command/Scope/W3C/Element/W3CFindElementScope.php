@@ -2,7 +2,7 @@
 
 namespace Silent\Core\Command\Scope\W3C\Element;
 
-use Silent\Core\Command\Scope\W3C\AbstractW3CScope;
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Element\Find\FindElementCommand;
 use Silent\Core\Command\W3C\Element\Find\FindElementsCommand;
 use Silent\Core\Command\W3C\Element\Find\FindShadowElementCommand;
@@ -12,7 +12,7 @@ use Silent\Core\Command\W3C\Element\Find\In\FindShadowElementInCommand;
 use Silent\Core\Command\W3C\Element\Find\In\FindShadowElementsInCommand;
 use Silent\Core\DTO\Element\FindStrategy;
 
-class W3CFindElementScope extends AbstractW3CScope {
+class W3CFindElementScope extends AbstractScope {
     public function element(FindStrategy $strategy, string $value): string
     {
         return $this->e->execute(new FindElementCommand($strategy, $value, $this->s));

@@ -5,7 +5,7 @@ namespace Silent\Core\WebDriver;
 use Silent\Core\CDPExecutor\CDPExecutor;
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\CDP\CDPCommandInterface;
-use Silent\Core\Command\Scope\W3C\W3CScope;
+use Silent\Core\Command\Scope\Scope;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;
@@ -31,6 +31,7 @@ class WebDriver implements WebDriverInterface {
     private WebSocket $ws;
     private EventDispatcherInterface $dispatcher;
     private Capabilities $capabilities;
+    private Scope $actions;
     public function __construct(
         HttpExecutorInterface $httpExecutor,
         ?Capabilities $capabilities = null, 
@@ -52,6 +53,7 @@ class WebDriver implements WebDriverInterface {
         if (isset($this->session)) {
             $this->cdpExecutor = new CDPExecutor($httpExecutor, $session->sessionId);
             $this->ws = new WebSocket($this->session->capabilities->seCdp, $httpExecutor->serializer());
+            $this->actions = new Scope($this->cdpExecutor, $this->executor, $this->session->sessionId);
         }
     }
 
@@ -60,9 +62,9 @@ class WebDriver implements WebDriverInterface {
         $this->dispatcher = $dispatcher;
     }
 
-    public function scope(): W3CScope
+    public function actions(): Scope
     {
-        return new W3CScope($this->executor, $this->session->sessionId);
+        return $this->actions;
     }
 
     public function getExecutor(): HttpExecutorInterface

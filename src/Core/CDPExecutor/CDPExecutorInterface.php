@@ -5,5 +5,5 @@ namespace Silent\Core\CDPExecutor;
 use Silent\Core\Command\CDP\CDPCommandInterface;
 
 interface CDPExecutorInterface {
-    public function execute(CDPCommandInterface $command): mixed;
+    public function execute(CDPCommandInterface $command, bool $withoutResult = false): mixed;
 }

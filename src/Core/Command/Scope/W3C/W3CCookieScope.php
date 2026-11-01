@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Command\Scope\W3C;
 
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Cookie\AddCookieCommand;
 use Silent\Core\Command\W3C\Cookie\DeleteAllCookiesCommand;
 use Silent\Core\Command\W3C\Cookie\DeleteCookieCommand;
@@ -9,7 +10,7 @@ use Silent\Core\Command\W3C\Cookie\GetCookieCommand;
 use Silent\Core\Command\W3C\Cookie\GetCookiesCommand;
 use Silent\Core\DTO\Cookie\Cookie;
 
-class W3CCookieScope extends AbstractW3CScope {
+class W3CCookieScope extends AbstractScope {
     public function add(Cookie $cookie): void
     {
         $this->e->execute(new AddCookieCommand($cookie, $this->s));

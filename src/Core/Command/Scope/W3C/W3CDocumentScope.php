@@ -3,12 +3,13 @@
 namespace Silent\Core\Command\Scope\W3C;
 
 use Silent\Core\Builder\JsFileBuilder;
+use Silent\Core\Command\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Document\ExecuteAsyncScriptCommand;
 use Silent\Core\Command\W3C\Document\ExecuteScriptCommand;
 use Silent\Core\Command\W3C\Document\GetPageSourceCommand;
 use Silent\Core\Command\W3C\Document\GetTitleCommand;
 
-class W3CDocumentScope extends AbstractW3CScope {
+class W3CDocumentScope extends AbstractScope {
     public function asyncScript(string $filePath, array $jsVars = [], array $args = []): string
     {
         $script = JsFileBuilder::build($filePath, $jsVars);

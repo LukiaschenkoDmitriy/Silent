@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Setup;
 
+use Silent\Core\Command\Scope\Scope;
 use Silent\Core\DI\ContainerLoader;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\CapabilityMatch;
@@ -91,18 +92,18 @@ abstract class CoreSetup implements SetupInterface {
         
         /** @var ModuleInterface $module */
         foreach ($this->moduleRegistry as $module) {
-            if (!$module->run($webdriver, $this->container)) {
+            if (!$module->run($webdriver, $webdriver->actions(), $this->container)) {
                 $webdriver->closeSession();
                 return;
             }
         }
 
-        $this->run($webdriver, $this->container);
+        $this->run($webdriver, $webdriver->actions(), $this->container);
 
         return $webdriver;
     }
 
-    public function run(WebDriverInterface $webdriver, ContainerInterface $container): void { }
+    public function run(WebDriverInterface $webdriver, Scope $actions, ContainerInterface $container): void { }
 
     public function setModules(iterable $modules): void
     {
