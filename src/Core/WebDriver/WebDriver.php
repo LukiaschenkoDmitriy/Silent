@@ -2,7 +2,6 @@
 
 namespace Silent\Core\WebDriver;
 
-use Override;
 use Silent\Core\CDPExecutor\CDPExecutor;
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\CDP\CDPCommandInterface;

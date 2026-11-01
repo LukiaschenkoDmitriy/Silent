@@ -3,10 +3,9 @@
 namespace Silent\Core\Module;
 
 use Closure;
-use Silent\Core\Command\Scope\Scope;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
-use Silent\Core\WebDriver\WebDriver;
+use Silent\Core\WebDriver\WebDriverInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -23,7 +22,7 @@ class Module implements ModuleInterface {
     {
         return $this->params;
     }
-    public function run(WebDriver $webdriver, Scope $actions, ContainerInterface $container): int { return static::CONTINUE; }
+    public function run(WebDriverInterface $webdriver, ContainerInterface $container): int { return static::CONTINUE; }
     public static function capabilities(Capabilities $capabilities, ChromeOptions $options): void { }
     public static function load(): Closure
     {
