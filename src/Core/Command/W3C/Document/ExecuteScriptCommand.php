@@ -19,9 +19,4 @@ final class ExecuteScriptCommand extends W3CSessionCommand {
     {
         return sprintf("/session/%s/execute/sync", $this->sessionId);
     }
-
-    public static function getScript(string $filePath): string
-    {
-        return file_get_contents($filePath);
-    }
 }

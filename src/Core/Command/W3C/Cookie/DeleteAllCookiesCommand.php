@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\W3C\Document;
+namespace Silent\Core\Command\W3C\Cookie;
 
 use Silent\Core\Command\W3C\W3CSessionCommand;
 

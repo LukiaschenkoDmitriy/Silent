@@ -2,7 +2,6 @@
 
 namespace Silent\Core\Command\W3C\Cookie;
 
-use Override;
 use Silent\Core\Command\W3C\W3CSessionCommand;
 use Symfony\Component\Serializer\Attribute\Ignore;
 

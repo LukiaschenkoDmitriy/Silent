@@ -2,7 +2,6 @@
 
 namespace Silent\Core\Command\W3C\Actions;
 
-use Override;
 use Silent\Core\Command\W3C\W3CSessionCommand;
 use Silent\Core\DTO\Actions\Actions;
 

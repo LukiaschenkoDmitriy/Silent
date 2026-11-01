@@ -2,12 +2,10 @@
 
 namespace Silent\Core\WebDriver;
 
-use Override;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Silent\Core\CDPExecutor\CDPExecutor;
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\CDP\CDPCommandInterface;
-use Silent\Core\Command\Chromium\CDP\SendWithResultCommand;
+use Silent\Core\Command\Scope\W3C\W3CScope;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;
@@ -23,6 +21,7 @@ use Silent\Core\HttpExecutor\HttpExecutorInterface;
 use Silent\Core\WebDriver\Events\AfterCreateSessionEvent;
 use Silent\Core\WebDriver\Events\BeforeCreateSessionEvent;
 use Silent\Core\WebSocket\WebSocket;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class WebDriver implements WebDriverInterface {
     private static string $url = "http://localhost:4444";
@@ -59,6 +58,11 @@ class WebDriver implements WebDriverInterface {
     public function setEventDispatcher(EventDispatcherInterface $dispatcher): void
     {
         $this->dispatcher = $dispatcher;
+    }
+
+    public function scope(): W3CScope
+    {
+        return new W3CScope($this->executor, $this->session->sessionId);
     }
 
     public function getExecutor(): HttpExecutorInterface

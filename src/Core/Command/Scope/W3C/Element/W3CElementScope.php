@@ -1,0 +1,47 @@
+<?php declare(strict_types=1);
+
+namespace Silent\Core\Command\Scope\W3C\Element;
+
+use Override;
+use Silent\Core\Command\Scope\W3C\AbstractW3CScope;
+use Silent\Core\Command\W3C\Element\Action\ElementChangeValueCommand;
+use Silent\Core\Command\W3C\Element\Action\ElementClearCommand;
+use Silent\Core\Command\W3C\Element\Action\ElementClickCommand;
+use Silent\Core\Command\W3C\Element\IsElementEnabledCommand;
+use Silent\Core\Command\W3C\Element\IsElementSelectedCommand;
+use Silent\Core\HttpExecutor\HttpExecutorInterface;
+
+class W3CElementScope extends AbstractW3CScope {
+    public W3CGetElementScope $get;
+    public W3CFindElementScope $find;
+    public function __construct(HttpExecutorInterface $e, string $s)
+    {
+        parent::__construct($e, $s);
+
+        $this->get = new W3CGetElementScope($e, $s);
+        $this->find = new W3CFindElementScope($e, $s);
+    }
+    public function changeValue(string $elementId, string $text): void
+    {
+        $this->e->execute(new ElementChangeValueCommand($elementId, $text, $this->s));
+    }
+
+    public function clearValue(string $elementId): void
+    {
+        $this->e->execute(new ElementClearCommand($elementId, $this->s));
+    }
+
+    public function click(string $elementId): void
+    {
+        $this->e->execute(new ElementClickCommand($elementId, $this->s));
+    }
+    public function isElementEnabled(string $elementId): bool
+    {
+        return $this->e->execute(new IsElementEnabledCommand($elementId, $this->s));
+    }
+
+    public function isElementSelected(string $elementId): bool
+    {
+        return $this->e->execute(new IsElementSelectedCommand($elementId, $this->s));
+    }
+}
