@@ -2,6 +2,12 @@
 
 namespace Silent\Core\WebDriver;
 
+use Override;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Silent\Core\CDPExecutor\CDPExecutor;
+use Silent\Core\CDPExecutor\CDPExecutorInterface;
+use Silent\Core\Command\CDP\CDPCommandInterface;
+use Silent\Core\Command\Chromium\CDP\SendWithResultCommand;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;
@@ -14,14 +20,17 @@ use Silent\Core\DTO\Session\Session;
 use Silent\Core\DTO\Status\Status;
 use Silent\Core\HttpExecutor\HttpExecutor;
 use Silent\Core\HttpExecutor\HttpExecutorInterface;
-use Silent\Core\Plugin\PluginInterface;
-use Silent\Core\Plugin\PluginRegistry;
-use Silent\Core\Registry\RegistryInterface;
+use Silent\Core\WebDriver\Events\AfterCreateSessionEvent;
+use Silent\Core\WebDriver\Events\BeforeCreateSessionEvent;
+use Silent\Core\WebSocket\WebSocket;
 
 class WebDriver implements WebDriverInterface {
     private static string $url = "http://localhost:4444";
     private Session $session;
     private HttpExecutorInterface $executor;
+    private CDPExecutorInterface $cdpExecutor;
+    private WebSocket $ws;
+    private EventDispatcherInterface $dispatcher;
     private Capabilities $capabilities;
     public function __construct(
         HttpExecutorInterface $httpExecutor,
@@ -40,6 +49,16 @@ class WebDriver implements WebDriverInterface {
         }
         
         $this->executor = $httpExecutor;
+
+        if (isset($this->session)) {
+            $this->cdpExecutor = new CDPExecutor($httpExecutor, $session->sessionId);
+            $this->ws = new WebSocket($this->session->capabilities->seCdp, $httpExecutor->serializer());
+        }
+    }
+
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher): void
+    {
+        $this->dispatcher = $dispatcher;
     }
 
     public function getExecutor(): HttpExecutorInterface
@@ -58,7 +77,23 @@ class WebDriver implements WebDriverInterface {
                 $this->capabilities->alwaysMatch->chromeOptions = new ChromeOptions();
             }
 
-            $this->session = $this->executor->executeW3C(new NewSessionCommand($this->capabilities));
+            if (isset($this->dispatcher)) {
+                $this->dispatcher->dispatch(new BeforeCreateSessionEvent($this->capabilities, $this->capabilities->alwaysMatch->chromeOptions));
+            }
+
+            $this->session = $this->executor->execute(new NewSessionCommand($this->capabilities));
+
+            if (!isset($this->cdpExecutor)) {
+                $this->cdpExecutor = new CDPExecutor($this->executor, $this->session->sessionId);
+            }
+
+            if (!isset($this->ws)) {
+                $this->ws = new WebSocket($this->session->capabilities->seCdp, $this->executor->serializer());
+            }
+
+            if (isset($this->dispatcher)) {
+                $this->dispatcher->dispatch(new AfterCreateSessionEvent($this->session, $this));
+            }
         }
 
         return $this;
@@ -66,11 +101,39 @@ class WebDriver implements WebDriverInterface {
 
     public function executeW3C(W3CCommandInterface $w3CCommand): mixed
     {
+        if (!isset($this->session)) {
+            throw new \Exception("Session not found, run Webdriver->init() to create session");
+        }        
+
         if ($w3CCommand instanceof W3CSessionCommand) {
             $w3CCommand->setSessionId($this->session->sessionId);
         }
 
-        return $this->executor->executeW3C($w3CCommand);
+        return $this->executor->execute($w3CCommand);
+    }
+
+    public function executeCDP(CDPCommandInterface $command): mixed
+    {
+        if (!isset($this->session)) {
+            throw new \Exception("Session not found, run Webdriver->init() to create session");
+        }
+
+        return $this->cdpExecutor->execute($command);
+    }
+
+    public function executeWS(CDPCommandInterface $command): mixed
+    {
+        if (!isset($this->session)) {
+            throw new \Exception("Session not found, run Webdriver->init() to create session");
+        }
+        
+        $this->ws->execute($command);
+
+        echo "Websocket connected, Ctrl+C to exit";
+
+        while (true) {
+            sleep(1);
+        }
     }
 
     public function getSession(): Session
@@ -80,7 +143,7 @@ class WebDriver implements WebDriverInterface {
 
     public function closeSession(): void
     {
-        $this->executor->executeW3C(new DeleteSessionCommand($this->session->sessionId));
+        $this->executor->execute(new DeleteSessionCommand($this->session->sessionId));
     }
 
     public static function createSession(Capabilities $capabilities, ?string $url = null): self
@@ -105,7 +168,7 @@ class WebDriver implements WebDriverInterface {
         /**
          * @var Status $status
          */
-        $status = (new HttpExecutor($url ?? static::$url))->executeW3C(new StatusCommand());
+        $status = (new HttpExecutor($url ?? static::$url))->execute(new StatusCommand());
 
         foreach ($status->nodes as $node) {
             foreach ($node->slots as $slot) {
@@ -121,7 +184,7 @@ class WebDriver implements WebDriverInterface {
 
     public static function cloaseSessionById(string $sessionId, ?string $url = null): void
     {
-        (new HttpExecutor(static::$url ?? $url))->executeW3C(new DeleteSessionCommand($sessionId));
+        (new HttpExecutor(static::$url ?? $url))->execute(new DeleteSessionCommand($sessionId));
     }
 
     public static function getFirstSession(?string $url = null): ?self
@@ -130,7 +193,7 @@ class WebDriver implements WebDriverInterface {
          * @var Status $status
          */
         $executor = new HttpExecutor($url ?? static::$url);
-        $status = $executor->executeW3C(new StatusCommand());
+        $status = $executor->execute(new StatusCommand());
 
         foreach ($status->nodes as $node) {
             foreach ($node->slots as $slot) {
@@ -153,7 +216,7 @@ class WebDriver implements WebDriverInterface {
          * @var Status $status
          */
         $executor = new HttpExecutor($url ?? static::$url);
-        $status = $executor->executeW3C(new StatusCommand());
+        $status = $executor->execute(new StatusCommand());
 
         $sessions = [];
         foreach ($status->nodes as $node) {

@@ -43,7 +43,7 @@ class HttpExecutor implements HttpExecutorInterface {
         $this->dispatcher = $dispatcher;
     }
 
-    public function executeW3C(W3CCommandInterface $command): mixed 
+    public function execute(W3CCommandInterface $command): mixed 
     {
         $unpackedParams = $command->transformParams($this->serializer->normalize($command, "json", $command->skipNullValue() ? [
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true

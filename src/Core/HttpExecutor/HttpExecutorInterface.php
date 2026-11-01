@@ -13,7 +13,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface HttpExecutorInterface {
     public function getClient(): HttpClientInterface;
-    public function executeW3C(W3CCommandInterface $command): mixed;
+    public function execute(W3CCommandInterface $command): mixed;
     public function serializer(): Serializer;
     /**
      * Summary of normalizers

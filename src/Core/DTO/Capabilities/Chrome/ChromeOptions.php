@@ -12,6 +12,7 @@ final class ChromeOptions
         public array $excludeSwitches = [],
         public ?string $binary = null,
         public array $extensions = [],
+        public ?string $debuggerAddress = null
     ) { }
 
     public function setBinary(string $binary): void
