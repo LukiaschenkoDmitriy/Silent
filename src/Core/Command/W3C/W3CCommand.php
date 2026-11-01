@@ -15,7 +15,7 @@ abstract class W3CCommand extends Command implements W3CCommandInterface {
 
     public function transformParams(array $params): mixed
     {
-        return $params;
+        return empty($params) ? new \stdClass() : $params;
     }
 
     public function skipNullValue(): bool
