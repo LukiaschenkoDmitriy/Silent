@@ -65,7 +65,11 @@ class HttpExecutor implements HttpExecutorInterface {
         $json = $command->transformResult($this->serializer->decode($response->getContent(), "json"));
 
         if ($command->result() == null) {
-            return $json;
+            if (isset($this->dispatcher)) {
+                $result = $this->dispatcher->dispatch(new W3CommandResultEvent($command, $json))->result;
+            }
+
+            return $result;
         }
 
         $result = $this->serializer->denormalize($json, $command->result(), "json", [

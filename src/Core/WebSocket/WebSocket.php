@@ -17,13 +17,18 @@ class WebSocket implements WebSocketInterface {
         $this->wsClient = new Client($wsUrl, ["timeout" => 10]);
     }
 
-    public function execute(CDPCommandInterface $command): mixed
+    public function execute(CDPCommandInterface $command, bool $withoutResult = false): mixed
     {
         $params = $command->transformParams($this->serializer->normalize($command, "json", [
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true
         ]));
 
         $this->wsClient->send(json_encode(["id" => $this->id++, "method" => $command->command(), "params" => $params]));
+
+        if  ($withoutResult) {
+            $this->wsClient->receive();
+            return null;
+        }
 
         $response = json_decode($this->wsClient->receive(), true);
 

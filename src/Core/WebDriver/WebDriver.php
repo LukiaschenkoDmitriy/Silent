@@ -2,6 +2,7 @@
 
 namespace Silent\Core\WebDriver;
 
+use Override;
 use Silent\Core\CDPExecutor\CDPExecutor;
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\CDP\CDPCommandInterface;
@@ -18,6 +19,7 @@ use Silent\Core\DTO\Session\Session;
 use Silent\Core\DTO\Status\Status;
 use Silent\Core\HttpExecutor\HttpExecutor;
 use Silent\Core\HttpExecutor\HttpExecutorInterface;
+use Silent\Core\ScopeBuilder\ScopeBuilder;
 use Silent\Core\WebDriver\Events\AfterCreateSessionEvent;
 use Silent\Core\WebDriver\Events\BeforeCreateSessionEvent;
 use Silent\Core\WebSocket\WebSocket;
@@ -60,11 +62,21 @@ class WebDriver implements WebDriverInterface {
     public function setEventDispatcher(EventDispatcherInterface $dispatcher): void
     {
         $this->dispatcher = $dispatcher;
+        $this->executor->setEventDispatcher($dispatcher);
     }
 
     public function actions(): Scope
     {
         return $this->actions;
+    }
+
+    public function builder(): ScopeBuilder
+    {
+        if (!isset($this->dispatcher)) {
+            throw new \Exception(sprintf("Neccessary initialize dispatcher to use builder"));
+        }
+
+        return new ScopeBuilder($this->dispatcher, $this);
     }
 
     public function getExecutor(): HttpExecutorInterface
