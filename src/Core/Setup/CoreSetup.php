@@ -111,6 +111,11 @@ abstract class CoreSetup implements SetupInterface {
         }
     }
 
+    public function getModule(string $moduleClass): ?object
+    {
+        return $this->moduleRegistry->get($moduleClass);
+    }
+
     public static function modules(ContainerInterface $container): array
     {
         return [];
