@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpExecutor implements HttpExecutorInterface {
@@ -66,10 +66,10 @@ class HttpExecutor implements HttpExecutorInterface {
 
         if ($command->result() == null) {
             if (isset($this->dispatcher)) {
-                $result = $this->dispatcher->dispatch(new W3CommandResultEvent($command, $json))->result;
+                $json = $this->dispatcher->dispatch(new W3CommandResultEvent($command, $json))->result;
             }
 
-            return $result;
+            return $json;
         }
 
         $result = $this->serializer->denormalize($json, $command->result(), "json", [

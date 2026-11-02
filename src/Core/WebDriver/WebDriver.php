@@ -5,7 +5,7 @@ namespace Silent\Core\WebDriver;
 use Silent\Core\CDPExecutor\CDPExecutor;
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\CDP\CDPCommandInterface;
-use Silent\Core\Command\Scope\Scope;
+use Silent\Core\Scope\Scope;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;
@@ -102,6 +102,10 @@ class WebDriver implements WebDriverInterface {
 
             if (!isset($this->cdpExecutor)) {
                 $this->cdpExecutor = new CDPExecutor($this->executor, $this->session->sessionId);
+            }
+
+            if (!isset($this->actions)) {
+                $this->actions = new Scope($this->cdpExecutor, $this->executor, $this->session->sessionId);
             }
 
             if (!isset($this->ws)) {

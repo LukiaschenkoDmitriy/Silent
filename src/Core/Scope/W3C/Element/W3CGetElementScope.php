@@ -1,9 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope\W3C\Element;
+namespace Silent\Core\Scope\W3C\Element;
 
-use Silent\Core\Command\Scope\AbstractScope;
-use Silent\Core\Command\Scope\W3C\AbstractW3CScope;
+use Silent\Core\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Element\Get\GetActiveElementCommand;
 use Silent\Core\Command\W3C\Element\Get\GetElementAttributeCommand;
 use Silent\Core\Command\W3C\Element\Get\GetElementComputedLabelCommand;

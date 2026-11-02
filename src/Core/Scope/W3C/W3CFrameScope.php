@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope\W3C;
+namespace Silent\Core\Scope\W3C;
 
-use Silent\Core\Command\Scope\AbstractScope;
+use Silent\Core\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Frame\SwitchToFrameCommand;
 use Silent\Core\Command\W3C\Frame\SwitchToParentFrameCommand;
 

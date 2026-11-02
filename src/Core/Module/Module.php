@@ -3,12 +3,14 @@
 namespace Silent\Core\Module;
 
 use Closure;
+use Override;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\Chrome\ChromeOptions;
 use Silent\Core\WebDriver\WebDriverInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Module implements ModuleInterface {
     public const CLOSE = 0;
@@ -22,6 +24,7 @@ class Module implements ModuleInterface {
     {
         return $this->params;
     }
+    public function listeners(EventDispatcherInterface $dispatcher): void {}
     public function run(WebDriverInterface $webdriver, ContainerInterface $container): int { return static::CONTINUE; }
     public static function capabilities(Capabilities $capabilities, ChromeOptions $options): void { }
     public static function load(): Closure

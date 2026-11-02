@@ -2,7 +2,7 @@
 
 use Silent\Core\EventDispatcher\SEventDispatcher;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 

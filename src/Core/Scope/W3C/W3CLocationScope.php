@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope\W3C;
+namespace Silent\Core\Scope\W3C;
 
-use Silent\Core\Command\Scope\AbstractScope;
+use Silent\Core\Scope\AbstractScope;
 use Silent\Core\Command\W3C\Location\GetLocationCommand;
 use Silent\Core\Command\W3C\Location\SetLocationCommand;
 use Silent\Core\DTO\Location\Location;

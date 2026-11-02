@@ -2,7 +2,7 @@
 
 namespace Silent\Core\HttpExecutor;
 
-use Silent\Core\Command\Scope\Scope;
+use Silent\Core\Scope\Scope;
 use Silent\Core\Command\W3C\W3CCommandInterface;
 
 interface HttpExecutorProviderInterface  {

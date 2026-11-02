@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope\Chromium;
+namespace Silent\Core\Scope\Chromium;
 
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\CDP\CDPCommandInterface;

@@ -2,7 +2,7 @@
 
 namespace Silent\Core\Setup;
 
-use Silent\Core\Command\Scope\Scope;
+use Override;
 use Silent\Core\DI\ContainerLoader;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\CapabilityMatch;
@@ -11,17 +11,21 @@ use Silent\Core\DTO\Capabilities\Enum\BrowserName;
 use Silent\Core\Module\ModuleInterface;
 use Silent\Core\Module\ModuleRegistry;
 use Silent\Core\Registry\RegistryInterface;
+use Silent\Core\Setup\Events\ModuleRegisterEvent;
 use Silent\Core\WebDriver\WebDriver;
 use Silent\Core\WebDriver\WebDriverInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class CoreSetup implements SetupInterface {
     private RegistryInterface $moduleRegistry;
+    private EventDispatcherInterface $dispatcher;
     public function __construct(private ContainerInterface $container) {
         $this->moduleRegistry = new ModuleRegistry();
+        $this->dispatcher = $container->get(EventDispatcherInterface::class);
     }
+
     public function hub(): ?string
     {
         return null;
@@ -29,8 +33,7 @@ abstract class CoreSetup implements SetupInterface {
 
     public function getWebDriver(): WebDriver
     {
-        if ($this->hub())
-            WebDriver::setHub($this->hub());
+        if ($this->hub()) WebDriver::setHub($this->hub());
 
         $class = new \ReflectionClass(static::class);
         $attributes = $class->getAttributes(SetupOptions::class);
@@ -74,7 +77,7 @@ abstract class CoreSetup implements SetupInterface {
 
         $webdriver = WebDriver::createSession($capabilities);
 
-        $webdriver->getExecutor()->setEventDispatcher($this->container->get(EventDispatcherInterface::class));
+        $webdriver->setEventDispatcher($this->dispatcher);
 
         $webdriver->init();
 
@@ -85,6 +88,8 @@ abstract class CoreSetup implements SetupInterface {
     {
         return new Capabilities(new CapabilityMatch(BrowserName::CHROME, new ChromeOptions()));
     }
+
+    public function listeners(EventDispatcherInterface $dispatcher): void {}
 
     public function __invoke()
     {
@@ -108,7 +113,10 @@ abstract class CoreSetup implements SetupInterface {
     public function setModules(iterable $modules): void
     {
         foreach ($modules as $module) {
-            $this->moduleRegistry->add($module::class, $module);
+            $module = $this->dispatcher->dispatch(new ModuleRegisterEvent($module::class, $module))->module;
+            if ($module) {
+                $this->moduleRegistry->add($module::class, $module);
+            }
         }
     }
 

@@ -1,20 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope;
+namespace Silent\Core\Scope;
 
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
-use Silent\Core\Command\Scope\Chromium\ChromiumScope;
-use Silent\Core\Command\Scope\W3C\Element\W3CElementScope;
-use Silent\Core\Command\Scope\W3C\W3CActionsScope;
-use Silent\Core\Command\Scope\W3C\W3CAlertScope;
-use Silent\Core\Command\Scope\W3C\W3CCookieScope;
-use Silent\Core\Command\Scope\W3C\W3CDocumentScope;
-use Silent\Core\Command\Scope\W3C\W3CFrameScope;
-use Silent\Core\Command\Scope\W3C\W3CLocationScope;
-use Silent\Core\Command\Scope\W3C\W3CNavigationScope;
-use Silent\Core\Command\Scope\W3C\W3CScreenshotScope;
-use Silent\Core\Command\Scope\W3C\W3CTimeoutScope;
-use Silent\Core\Command\Scope\W3C\W3CWindowScope;
+use Silent\Core\Scope\Chromium\ChromiumScope;
+use Silent\Core\Scope\W3C\Element\W3CElementScope;
+use Silent\Core\Scope\W3C\W3CActionsScope;
+use Silent\Core\Scope\W3C\W3CAlertScope;
+use Silent\Core\Scope\W3C\W3CCookieScope;
+use Silent\Core\Scope\W3C\W3CDocumentScope;
+use Silent\Core\Scope\W3C\W3CFrameScope;
+use Silent\Core\Scope\W3C\W3CLocationScope;
+use Silent\Core\Scope\W3C\W3CNavigationScope;
+use Silent\Core\Scope\W3C\W3CScreenshotScope;
+use Silent\Core\Scope\W3C\W3CTimeoutScope;
+use Silent\Core\Scope\W3C\W3CWindowScope;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;

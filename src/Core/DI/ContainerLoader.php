@@ -9,7 +9,9 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
 class ContainerLoader implements ContainerLoaderInterface {
@@ -24,7 +26,9 @@ class ContainerLoader implements ContainerLoaderInterface {
         static::loadServices($builder, $moduleDir);
         static::load($moduleClass::load(), $builder, $moduleDir);
 
-        $builder->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true)->addMethodCall("setParams", [$params]);
+        $builder->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true)
+            ->addMethodCall("listeners", [service(EventDispatcherInterface::class)])
+            ->addMethodCall("setParams", [$params]);
     }
 
     public static function loadSetup(ContainerBuilder $builder, string $setupClass): void
@@ -55,6 +59,7 @@ class ContainerLoader implements ContainerLoaderInterface {
 
         $builder->setAlias(ContainerInterface::class, "service_container")->setPublic(true);
         $builder->register($setupClass, $setupClass)->addTag("webdriver.setup")->setPublic(true)->setAutowired(true)
+            ->addMethodCall("listeners", [service(EventDispatcherInterface::class)])
             ->addMethodCall("setModules", [tagged_iterator("webdriver.module")]);
 
         $builder->compile(true);

@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope\Chromium;
+namespace Silent\Core\Scope\Chromium;
 
 use Silent\Core\Command\Chromium\Cast\CastDesktopCommand;
 use Silent\Core\Command\Chromium\Cast\CastGetSinksCommand;
 use Silent\Core\Command\Chromium\Cast\CastTabCommand;
 use Silent\Core\Command\Chromium\Cast\SetSinkToUserCommand;
 use Silent\Core\Command\Chromium\Cast\StopCastCommand;
-use Silent\Core\Command\Scope\AbstractScope;
+use Silent\Core\Scope\AbstractScope;
 use Silent\Core\DTO\Cast\CastSink;
 
 class ChromiumCastScope extends AbstractScope {

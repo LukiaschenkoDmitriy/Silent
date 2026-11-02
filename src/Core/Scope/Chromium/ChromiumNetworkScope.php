@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Silent\Core\Command\Scope\Chromium;
+namespace Silent\Core\Scope\Chromium;
 
 use Silent\Core\Command\Chromium\Network\DeleteNetworkConditionsCommand;
 use Silent\Core\Command\Chromium\Network\GetNetworkConditionsCommand;
 use Silent\Core\Command\Chromium\Network\SetNetworkConditionsCommand;
-use Silent\Core\Command\Scope\AbstractScope;
+use Silent\Core\Scope\AbstractScope;
 use Silent\Core\DTO\Network\NetworkConditions;
 use Silent\Core\DTO\Network\NetworkPreset;
 
