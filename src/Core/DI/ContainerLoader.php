@@ -27,7 +27,7 @@ class ContainerLoader implements ContainerLoaderInterface {
         static::load($moduleClass::load(), $builder, $moduleDir);
 
         $builder->register($moduleClass, $moduleClass)->setAutowired(true)->addTag("webdriver.module")->setPublic(true)
-            ->addMethodCall("listeners", [service(EventDispatcherInterface::class)])
+            ->addMethodCall("listeners", [EventDispatcherInterface::class])
             ->addMethodCall("setParams", [$params]);
     }
 
@@ -59,7 +59,7 @@ class ContainerLoader implements ContainerLoaderInterface {
 
         $builder->setAlias(ContainerInterface::class, "service_container")->setPublic(true);
         $builder->register($setupClass, $setupClass)->addTag("webdriver.setup")->setPublic(true)->setAutowired(true)
-            ->addMethodCall("listeners", [service(EventDispatcherInterface::class)])
+            ->addMethodCall("listeners", [EventDispatcherInterface::class])
             ->addMethodCall("setModules", [tagged_iterator("webdriver.module")]);
 
         $builder->compile(true);
