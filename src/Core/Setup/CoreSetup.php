@@ -77,8 +77,6 @@ abstract class CoreSetup implements SetupInterface {
 
         $webdriver = WebDriver::createSession($capabilities);
 
-        $webdriver->setEventDispatcher($this->dispatcher);
-
         $webdriver->init();
 
         return $webdriver;
@@ -94,6 +92,7 @@ abstract class CoreSetup implements SetupInterface {
     public function __invoke()
     {
         $webdriver = $this->getWebDriver();
+        $webdriver->setEventDispatcher($this->dispatcher);
         
         /** @var ModuleInterface $module */
         foreach ($this->moduleRegistry as $module) {
