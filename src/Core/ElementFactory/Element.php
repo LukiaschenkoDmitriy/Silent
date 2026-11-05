@@ -2,6 +2,9 @@
 
 namespace Silent\Core\ElementFactory;
 
+use Silent\Core\Builder\JsFileBuilder;
+use Silent\Core\Command\W3C\Document\ExecuteScriptCommand;
+use Silent\Core\DTO\Element\FindConstants;
 use Silent\Core\DTO\Element\FindStrategy;
 use Silent\Core\DTO\Window\WindowRect;
 use Silent\Core\Scope\W3C\Element\W3CElementScope;
@@ -15,7 +18,7 @@ class Element {
     private string $name;
     private string $text;
     public function __construct(
-        private W3CElementScope $scope, 
+        private W3CElementScope $scope,
         private string $elementId, 
         private bool $lazy = true
     ) {
@@ -158,5 +161,29 @@ class Element {
     public function findShadowElements(FindStrategy $strategy, string $value): array
     {
         return array_map(fn(string $elementId) => new Element($this->scope, $elementId, $this->lazy), $this->scope->find->shadowElementsIn($this->elementId, $strategy, $value));
+    }
+
+    public function getElementProperty(string $property, string $type = FindConstants::ELEMENT): mixed
+    {
+        return $this->scope->getExecutor()->execute(new ExecuteScriptCommand(JsFileBuilder::buildFromString(
+            "return arguments[0].{{ property }};", 
+            ["property" => $property]
+        ), [[$type => $this->elementId]], $this->scope->getSessionId()));
+    }
+
+    public function runElementFunction(string $function, array $arguments, string $type = FindConstants::ELEMENT): mixed
+    {
+        return $this->scope->getExecutor()->execute(new ExecuteScriptCommand(JsFileBuilder::buildFromString(
+            "return arguments[0].{{function}}(...{{arguments|json}});",
+            ["function" => $function, "arguments" => $arguments]
+        ), [[$type => $this->elementId]], $this->scope->getSessionId()));
+    }
+
+    public function runJsCodeOnElement(string $code, string $type = FindConstants::ELEMENT): mixed
+    {
+        return $this->scope->getExecutor()->execute(new ExecuteScriptCommand(JsFileBuilder::buildFromString(
+            "return arguments[0]{{code}};",
+            ["code" => $code]
+        ), [[$type => $this->elementId]], $this->scope->getSessionId()));
     }
 }

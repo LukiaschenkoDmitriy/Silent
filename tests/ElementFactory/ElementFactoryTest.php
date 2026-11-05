@@ -4,6 +4,7 @@ namespace Tests\ElementFactory;
 
 use PHPUnit\Framework\TestCase;
 use Silent\Core\DI\Container;
+use Silent\Core\DTO\Element\FindConstants;
 use Silent\Core\DTO\Element\FindStrategy;
 use Silent\Core\ElementFactory\ElementFactory;
 use Silent\Core\Scope\Scope;
@@ -32,6 +33,10 @@ class ElementFactoryTest extends TestCase {
         $body = $html->findElement(FindStrategy::CSS_SELECTOR, "body");
 
         $this->assertEquals("body", $body->getName());
+
+        $this->assertEquals(891, $body->getElementProperty("clientHeight"));
+        $this->assertEquals(["interrupted" => false], $body->runElementFunction("scroll", [10, 20]));
+        $this->assertEquals("[object HTMLBodyElement]", $body->runJsCodeOnElement(".toLocaleString()"));
     }
 
     protected function tearDown(): void

@@ -9,4 +9,14 @@ abstract class AbstractScope {
         protected HttpExecutorInterface $e,
         protected string $s
     ) {}
+
+    public function getExecutor(): HttpExecutorInterface
+    {
+        return $this->e;
+    }
+
+    public function getSessionId(): string
+    {
+        return $this->s;
+    }
 }

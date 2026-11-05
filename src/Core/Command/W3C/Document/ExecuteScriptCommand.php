@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Command\W3C\Document;
 
+use Override;
 use Silent\Core\Command\W3C\W3CSessionCommand;
 
 final class ExecuteScriptCommand extends W3CSessionCommand {

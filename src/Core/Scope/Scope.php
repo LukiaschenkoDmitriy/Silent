@@ -57,16 +57,6 @@ class Scope extends AbstractScope {
         $this->chromium = new ChromiumScope($cdpExecutor, $executor, $sessionId);
     }
 
-    public function getHttpExecutor(): HttpExecutorInterface
-    {
-        return $this->executor;
-    }
-
-    public function getCDPExecutor(): CDPExecutorInterface
-    {
-        return $this->cdpExecutor;
-    }
-
     public function getStatus(): Status
     {
         return $this->executor->execute(new StatusCommand());

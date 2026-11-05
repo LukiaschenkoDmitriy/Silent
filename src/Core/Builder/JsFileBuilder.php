@@ -41,6 +41,37 @@ final class JsFileBuilder
         );
     }
 
+    public static function buildFromString(
+        string $template,
+        array $parameters = [],
+        string $source = 'inline template'
+    ): string {
+        return preg_replace_callback(
+            '/\{\{\s*([\w.]+)\s*(?:\|\s*(json|raw))?\s*\}\}/',
+            function (array $m) use ($parameters, $source): string {
+                $value = static::resolve($parameters, $m[1], $source);
+                $filter = $m[2] ?? 'raw';
+
+                if ($filter === 'json') {
+                    return json_encode(
+                        $value,
+                        JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+                    );
+                }
+
+                return match (true) {
+                    is_bool($value) => $value ? 'true' : 'false',
+                    $value === null => 'null',
+                    is_scalar($value), $value instanceof \Stringable => (string) $value,
+                    default => throw new \InvalidArgumentException(
+                        "Parameter '{$m[1]}' is not scalar, use {{ {$m[1]}|json }}"
+                    ),
+                };
+            },
+            $template
+        );
+    }
+
     private static function resolve(array $parameters, string $key, string $path): mixed
     {
         $value = $parameters;
