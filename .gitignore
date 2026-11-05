@@ -6,3 +6,4 @@
 /local
 /coverage
 /.phpunit.result.cache
+/tests
