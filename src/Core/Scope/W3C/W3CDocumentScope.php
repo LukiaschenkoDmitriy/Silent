@@ -10,16 +10,26 @@ use Silent\Core\Command\W3C\Document\GetPageSourceCommand;
 use Silent\Core\Command\W3C\Document\GetTitleCommand;
 
 class W3CDocumentScope extends AbstractScope {
-    public function asyncScript(string $filePath, array $jsVars = [], array $args = []): ?string
+    public function asyncScript(string $filePath, array $jsVars = [], array $args = []): mixed
     {
         $script = JsFileBuilder::build($filePath, $jsVars);
         return $this->e->execute(new ExecuteAsyncScriptCommand($script, $args, $this->s));
     }
 
-    public function syncScript(string $filePath, array $jsVars = [], array $args = []): ?string
+    public function syncScript(string $filePath, array $jsVars = [], array $args = []): mixed
     {
         $script = JsFileBuilder::build($filePath, $jsVars);
         return $this->e->execute(new ExecuteScriptCommand($script, $args, $this->s));
+    }
+
+    public function drySyncScript(string $script, array $args = []): mixed
+    {
+        return $this->e->execute(new ExecuteScriptCommand($script, $args, $this->s));
+    }
+
+    public function dryAsyncScript(string $script, array $args = []): mixed
+    {
+        return $this->e->execute(new ExecuteAsyncScriptCommand($script, $args, $this->s));
     }
 
     public function getPageSource(): string

@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Command\W3C;
 
+use Exception;
 use Silent\Core\Command\Command;
 use Silent\Core\Command\W3C\Document\GetTitleCommand;
 
@@ -21,5 +22,10 @@ abstract class W3CCommand extends Command implements W3CCommandInterface {
     public function skipNullValue(): bool
     {
         return true;
+    }
+
+    public function exception(): ?Exception
+    {
+        return null;
     }
 }

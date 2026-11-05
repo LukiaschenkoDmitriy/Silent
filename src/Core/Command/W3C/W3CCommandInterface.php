@@ -11,4 +11,5 @@ interface W3CCommandInterface extends CommandInterface {
     public function method(): string;
     public function url(): string;
     public function skipNullValue(): bool;
+    public function exception(): ?\Exception;
 }

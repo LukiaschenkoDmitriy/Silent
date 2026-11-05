@@ -22,6 +22,8 @@ use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpExecutor implements HttpExecutorInterface {
@@ -32,19 +34,41 @@ class HttpExecutor implements HttpExecutorInterface {
     private HttpClientInterface $client;
     private Serializer $serializer;
     private EventDispatcherInterface $dispatcher;
+    private ValidatorInterface $validator;
 
     public function __construct(string $url, array $headers = [])
     {
         $this->serializer = new Serializer($this->normalizers(), $this->encoders());
         $this->client = HttpClient::createForBaseUri($url, ["headers" => $headers ?? static::DEFAULT_HTTP_HEADERES]);
+        $this->validator = $this->getValidator();
     }
 
     public function setEventDispatcher(EventDispatcherInterface $dispatcher): void {
         $this->dispatcher = $dispatcher;
     }
 
+    public function getValidator(): ValidatorInterface
+    {
+        return Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
+    }
+
     public function execute(W3CCommandInterface $command): mixed 
     {
+        if (isset($this->validator)) {
+            $violations = $this->validator->validate($command);
+
+            if (count($violations) > 0) {
+                $exceptions = [];
+                foreach ($violations as $violation) {
+                    $exceptions[] = sprintf("%s: %s", $violation->getPropertyPath(), $violation->getMessage());
+                }
+
+                if (count($exceptions) > 0) {
+                    throw new \InvalidArgumentException("\n\n" . implode("\n", $exceptions));
+                }
+            }
+        }
+
         $unpackedParams = $command->transformParams($this->serializer->normalize($command, "json", $command->skipNullValue() ? [
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true
         ]: []));
@@ -59,6 +83,11 @@ class HttpExecutor implements HttpExecutorInterface {
 
         if ($response->getStatusCode() != 200) {
             $json = $this->serializer->decode($response->getContent(false), "json");
+
+            if ($command->exception() !== null) {
+                throw $command->exception();
+            }
+
             throw new HttpExecutorException($json["value"]["message"], $json["value"]["error"]);
         }
 

@@ -2,7 +2,6 @@
 
 namespace Silent\Core\Command\W3C;
 
-use Override;
 use Symfony\Component\Serializer\Attribute\Ignore;
 
 abstract class W3CSessionCommand extends W3CCommand {

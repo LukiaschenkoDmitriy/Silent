@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 interface HttpExecutorInterface {
@@ -26,4 +27,5 @@ interface HttpExecutorInterface {
      */
     public function encoders(): array;
     public function setEventDispatcher(EventDispatcherInterface $dispatcher): void;
+    public function getValidator(): ValidatorInterface;
 }
