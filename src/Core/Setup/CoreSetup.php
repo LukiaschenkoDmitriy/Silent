@@ -2,7 +2,6 @@
 
 namespace Silent\Core\Setup;
 
-use Override;
 use Silent\Core\DI\ContainerLoader;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\CapabilityMatch;
