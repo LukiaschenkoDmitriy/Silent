@@ -9,5 +9,5 @@ interface HttpExecutorProviderInterface  {
     public static function setHub(string $hub): void;
     public function executeW3C(W3CCommandInterface $w3CCommand): mixed;
     public function getExecutor(): HttpExecutorInterface;
-    public function actions(): Scope;
+    public function scope(): Scope;
 }

@@ -65,7 +65,7 @@ class WebDriver implements WebDriverInterface {
         $this->executor->setEventDispatcher($dispatcher);
     }
 
-    public function actions(): Scope
+    public function scope(): Scope
     {
         return $this->actions;
     }

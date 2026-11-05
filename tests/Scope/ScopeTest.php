@@ -21,7 +21,7 @@ class ScopeTest extends TestCase {
     protected function setUp(): void
     {
         $this->setup = SetupFixture::init(new Container());
-        $this->scope = $this->setup->getWebDriver()->actions();
+        $this->scope = $this->setup->getWebDriver()->scope();
     }
 
     public function testScopeNavigator() {

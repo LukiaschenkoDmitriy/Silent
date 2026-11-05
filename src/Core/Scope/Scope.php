@@ -37,7 +37,7 @@ class Scope extends AbstractScope {
     public W3CWindowScope $window;
     public ChromiumScope $chromium;
     public function __construct(
-        CDPExecutorInterface $cdpExecutor,
+        private CDPExecutorInterface $cdpExecutor,
         private HttpExecutorInterface $executor, 
         private string $sessionId
     ) {
@@ -55,6 +55,16 @@ class Scope extends AbstractScope {
         $this->timeout = new W3CTimeoutScope($executor, $sessionId);
         $this->window = new W3CWindowScope($executor, $sessionId);
         $this->chromium = new ChromiumScope($cdpExecutor, $executor, $sessionId);
+    }
+
+    public function getHttpExecutor(): HttpExecutorInterface
+    {
+        return $this->executor;
+    }
+
+    public function getCDPExecutor(): CDPExecutorInterface
+    {
+        return $this->cdpExecutor;
     }
 
     public function getStatus(): Status
