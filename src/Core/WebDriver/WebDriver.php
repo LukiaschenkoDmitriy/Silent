@@ -22,6 +22,7 @@ use Silent\Core\ScopeBuilder\ScopeBuilder;
 use Silent\Core\WebDriver\Events\AfterCreateSessionEvent;
 use Silent\Core\WebDriver\Events\BeforeCreateSessionEvent;
 use Silent\Core\WebSocket\WebSocket;
+use Silent\Core\WebSocket\WebSocketInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class WebDriver implements WebDriverInterface {
@@ -29,7 +30,7 @@ class WebDriver implements WebDriverInterface {
     private Session $session;
     private HttpExecutorInterface $executor;
     private CDPExecutorInterface $cdpExecutor;
-    private WebSocket $ws;
+    private WebSocketInterface $ws;
     private EventDispatcherInterface $dispatcher;
     private Capabilities $capabilities;
     private Scope $actions;

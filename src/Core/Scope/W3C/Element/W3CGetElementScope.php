@@ -19,7 +19,7 @@ class W3CGetElementScope extends AbstractScope {
         return $this->e->execute(new GetActiveElementCommand($this->s));
     }
 
-    public function elementAttribute(string $elementId, string $attribute): string
+    public function elementAttribute(string $elementId, string $attribute): ?string
     {
         return $this->e->execute(new GetElementAttributeCommand($elementId, $attribute, $this->s));
     }

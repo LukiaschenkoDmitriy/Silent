@@ -2,16 +2,16 @@
 
 namespace Tests\Scope;
 
-use Override;
 use PHPUnit\Framework\TestCase;
+use Silent\Core\Command\W3C\Element\Exception\NotFoundElementException;
 use Silent\Core\Command\W3C\Location\Exception\LocationNotSetException as ExceptionLocationNotSetException;
 use Silent\Core\Command\W3C\Location\SetLocationCommand;
 use Silent\Core\DI\Container;
+use Silent\Core\DTO\Element\FindStrategy;
 use Silent\Core\DTO\Location\Location;
 use Silent\Core\DTO\Window\WindowRect;
 use Silent\Core\DTO\Window\WindowType;
 use Silent\Core\Scope\Scope;
-use Silent\Core\Scope\W3C\Exception\LocationNotSetException;
 use Silent\Core\Setup\CoreSetup;
 use Tests\Fixtures\Setup\SetupFixture\SetupFixture;
 
@@ -142,6 +142,38 @@ class ScopeTest extends TestCase {
         $this->scope->navigation->to("https://www.youtube.com/");
 
         $this->assertEquals("YouTube", $document->getTitle());
+
+        $this->scope->navigation->to("https://www.google.com/");
+
+        file_put_contents(__DIR__ . "/test.txt", $document->getPageSource());
+
+        $this->assertFileExists(__DIR__ . "/test.txt");
+
+        unlink(__DIR__ . "/test.txt");
+    }
+
+    public function testElementInvalidSelector() {
+        $this->scope->navigation->to("https://www.google.com/");
+
+        $element = $this->scope->element;
+
+        $this->expectException(NotFoundElementException::class);
+        $this->expectExceptionMessageIs("Failed to find an element with the given selector: bod2222y");
+
+        $element->find->element(FindStrategy::CSS_SELECTOR, "bod2222y");
+    }
+
+    public function testGetElement() {
+        $this->scope->navigation->to("https://www.google.com/");
+
+        $element = $this->scope->element;
+        $htmlId = $element->find->element(FindStrategy::CSS_SELECTOR, "html");
+
+        $this->assertEquals("html", $element->get->elementName($htmlId));
+        $this->assertEquals("pl", $element->get->elementAttribute($htmlId, "lang"));
+        $this->assertEquals(new WindowRect(0, 0, 937, 891), $element->get->elementRect($htmlId));
+        $this->assertStringContainsString("Google Store", $element->get->elementText($htmlId));
+        $this->assertEquals("block", $element->get->elementCSSValue($htmlId, "display"));
     }
 
     public function tearDown(): void

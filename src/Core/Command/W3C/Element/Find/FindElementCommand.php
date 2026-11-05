@@ -2,6 +2,8 @@
 
 namespace Silent\Core\Command\W3C\Element\Find;
 
+use Exception;
+use Silent\Core\Command\W3C\Element\Exception\NotFoundElementException;
 use Silent\Core\Command\W3C\W3CSessionCommand;
 use Silent\Core\DTO\Element\FindConstants;
 use Silent\Core\DTO\Element\FindStrategy;
@@ -31,5 +33,10 @@ final class FindElementCommand extends W3CSessionCommand {
     public function transformResult(array $data): mixed
     {
         return parent::transformResult($data)[FindConstants::ELEMENT];
+    }
+
+    public function exception(): ?Exception
+    {
+        return new NotFoundElementException($this->value);
     }
 }
