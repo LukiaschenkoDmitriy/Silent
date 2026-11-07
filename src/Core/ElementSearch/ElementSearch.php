@@ -4,9 +4,13 @@ namespace Silent\Core\ElementSearch;
 
 use Silent\Core\DTO\Element\FindStrategy;
 use Silent\Core\Scope\W3C\Element\W3CElementScope;
+use Silent\Core\WebDriver\WebDriverInterface;
 
 class ElementSearch {
-    public function __construct(private W3CElementScope $scope, private bool $lazy = true) {}
+    private W3CElementScope $scope;
+    public function __construct(WebDriverInterface $webdriver, private bool $lazy = true) {
+        $this->scope = new W3CElementScope($webdriver);
+    }
     public function disableLazyLoading(): void
     {
         $this->lazy = false;   

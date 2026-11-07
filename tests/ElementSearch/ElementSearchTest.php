@@ -11,20 +11,20 @@ use Silent\Core\Setup\CoreSetup;
 use Tests\Fixtures\Setup\SetupFixture\SetupFixture;
 
 class ElementSearchTest extends TestCase {
-    private ElementSearch $factory;
+    private ElementSearch $search;
     private Scope $scope;
     private CoreSetup $setup;
     protected function setUp(): void
     {
         $this->setup = SetupFixture::init(new Container());
-        $this->scope = $this->setup->getWebDriver()->scope();
-        $this->factory = new ElementSearch($this->scope->element, true);
+        $this->scope = new Scope($this->setup->getWebDriver());
+        $this->search = new ElementSearch($this->setup->getWebDriver(), true);
     }
 
     public function testElementSearch() {
         $this->scope->navigation->to("https://www.google.com/");
 
-        $html = $this->factory->findElement(FindStrategy::CSS_SELECTOR, "html");
+        $html = $this->search->findElement(FindStrategy::CSS_SELECTOR, "html");
 
         $this->assertEquals("html", $html->getName());
         $this->assertEquals("pl", $html->getAttribute("lang"));

@@ -31,10 +31,17 @@ class ScopeBuilder
 
     private ?\Closure $logger = null;
 
+    private EventDispatcherInterface $dispatcher;
+
     public function __construct(
-        private EventDispatcherInterface $dispatcher,
         private WebDriverInterface $webdriver,
-    ) {}
+    ) {
+        if ($webdriver->getEventDispatcher() === null) {
+            throw new \Exception("Necessary to pass EventDispatcher to webdriver");
+        }
+
+        $this->dispatcher = $webdriver->getEventDispatcher();
+    }
 
     public function set(CDPCommandInterface|W3CCommandInterface|\Closure|array $command): self
     {

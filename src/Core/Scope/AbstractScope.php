@@ -3,12 +3,17 @@
 namespace Silent\Core\Scope;
 
 use Silent\Core\HttpExecutor\HttpExecutorInterface;
+use Silent\Core\WebDriver\WebDriverInterface;
 
 abstract class AbstractScope {
+    protected HttpExecutorInterface $e;
+    protected string $s;
     public function __construct(
-        protected HttpExecutorInterface $e,
-        protected string $s
-    ) {}
+        WebDriverInterface $webdriver
+    ) {
+        $this->e = $webdriver->getExecutor();
+        $this->s = $webdriver->getSession()->sessionId;
+    }
 
     public function getExecutor(): HttpExecutorInterface
     {

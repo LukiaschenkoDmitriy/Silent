@@ -2,24 +2,23 @@
 
 namespace Silent\Core\Scope\Chromium;
 
-use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\Chromium\HeapSnapshotCommand;
 use Silent\Core\Scope\AbstractScope;
-use Silent\Core\HttpExecutor\HttpExecutorInterface;
+use Silent\Core\WebDriver\WebDriverInterface;
 
 class ChromiumScope extends AbstractScope {
     public ChromiumCastScope $cast;
     public ChromiumCDPScope $cdp;
     public ChromiumNetworkScope $network;
     public ChromiumPageScope $page;
-    public function __construct(private CDPExecutorInterface $cdpExecutor, HttpExecutorInterface $e, string $s)
+    public function __construct(WebDriverInterface $webdriver)
     {
-        parent::__construct($e, $s);
+        parent::__construct($webdriver);
 
-        $this->cast = new ChromiumCastScope($e, $s);
-        $this->cdp = new ChromiumCDPScope($cdpExecutor);
-        $this->network = new ChromiumNetworkScope($e, $s);
-        $this->page = new ChromiumPageScope($e, $s);
+        $this->cast = new ChromiumCastScope($webdriver);
+        $this->cdp = new ChromiumCDPScope($webdriver);
+        $this->network = new ChromiumNetworkScope($webdriver);
+        $this->page = new ChromiumPageScope($webdriver);
     }
 
     public function heapSnapshot(string $filepath) {

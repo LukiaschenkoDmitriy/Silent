@@ -14,6 +14,7 @@ interface SetupInterface {
     public function getWebDriver(): WebDriverInterface;
     public function run(WebDriverInterface $webdriver, ContainerInterface $container): void;
     public function getModule(string $moduleClass): ?object;
+    public function setWebDriver(WebDriverInterface $webdriver): WebDriverInterface;
     public function listeners(EventDispatcherInterface $dispatcher): void;
     public static function init(ContainerBuilder $builder): SetupInterface;
     public static function modules(ContainerInterface $container): array;

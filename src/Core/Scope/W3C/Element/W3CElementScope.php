@@ -8,17 +8,17 @@ use Silent\Core\Command\W3C\Element\Action\ElementClearCommand;
 use Silent\Core\Command\W3C\Element\Action\ElementClickCommand;
 use Silent\Core\Command\W3C\Element\IsElementEnabledCommand;
 use Silent\Core\Command\W3C\Element\IsElementSelectedCommand;
-use Silent\Core\HttpExecutor\HttpExecutorInterface;
+use Silent\Core\WebDriver\WebDriverInterface;
 
 class W3CElementScope extends AbstractScope {
     public W3CGetElementScope $get;
     public W3CFindElementScope $find;
-    public function __construct(HttpExecutorInterface $e, string $s)
+    public function __construct(WebDriverInterface $webdriver)
     {
-        parent::__construct($e, $s);
+        parent::__construct($webdriver);
 
-        $this->get = new W3CGetElementScope($e, $s);
-        $this->find = new W3CFindElementScope($e, $s);
+        $this->get = new W3CGetElementScope($webdriver);
+        $this->find = new W3CFindElementScope($webdriver);
     }
     public function changeValue(string $elementId, string $text): void
     {

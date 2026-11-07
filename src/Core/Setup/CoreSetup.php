@@ -2,6 +2,7 @@
 
 namespace Silent\Core\Setup;
 
+use Override;
 use Silent\Core\DI\ContainerLoader;
 use Silent\Core\DTO\Capabilities\Capabilities;
 use Silent\Core\DTO\Capabilities\CapabilityMatch;
@@ -20,6 +21,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 abstract class CoreSetup implements SetupInterface {
     private RegistryInterface $moduleRegistry;
     private EventDispatcherInterface $dispatcher;
+    private WebDriverInterface $webdriver;
     public function __construct(private ContainerInterface $container) {
         $this->moduleRegistry = new ModuleRegistry();
         $this->dispatcher = $container->get(EventDispatcherInterface::class);
@@ -30,8 +32,16 @@ abstract class CoreSetup implements SetupInterface {
         return null;
     }
 
-    public function getWebDriver(): WebDriver
+    public function setWebDriver(WebDriverInterface $webdriver): WebDriverInterface
     {
+        $this->webdriver = $webdriver;
+        return $this->webdriver;
+    }
+
+    public function getWebDriver(): WebDriverInterface
+    {
+        if (isset($this->webdriver)) return $this->webdriver;
+
         if ($this->hub()) WebDriver::setHub($this->hub());
 
         $class = new \ReflectionClass(static::class);
@@ -47,23 +57,23 @@ abstract class CoreSetup implements SetupInterface {
             if ($flags & SetupOptions::GET_EXISTED_SESSION_OR_CREATE) {
                 $session = WebDriver::getFirstSession();
                 if ($session)
-                    return $session;
+                    return $this->setWebDriver($session);
                 else {
-                    return $this->getWebDriverWithCapabilitites();
+                    return $this->setWebDriver($this->getWebDriverWithCapabilitites());
                 }
             }
 
             if ($flags & SetupOptions::ONLY_GET_EXISTED) {
-                return WebDriver::getFirstSession();
+                return $this->setWebDriver(WebDriver::getFirstSession());
             }
 
             if ($flags & SetupOptions::CLOSE_ALL_AND_CREATE_NEW) {
                 WebDriver::closeAllSessions();
-                return $this->getWebDriverWithCapabilitites();
+                return $this->setWebDriver($this->getWebDriverWithCapabilitites());
             }
         }
 
-        return $this->getWebDriverWithCapabilitites();
+        return $this->setWebDriver($this->getWebDriverWithCapabilitites());
     }
 
     private function getWebDriverWithCapabilitites(): WebDriver {

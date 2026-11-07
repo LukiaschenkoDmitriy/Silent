@@ -5,7 +5,6 @@ namespace Silent\Core\WebDriver;
 use Silent\Core\CDPExecutor\CDPExecutor;
 use Silent\Core\CDPExecutor\CDPExecutorInterface;
 use Silent\Core\Command\CDP\CDPCommandInterface;
-use Silent\Core\Scope\Scope;
 use Silent\Core\Command\W3C\Session\DeleteSessionCommand;
 use Silent\Core\Command\W3C\Session\NewSessionCommand;
 use Silent\Core\Command\W3C\StatusCommand;
@@ -18,7 +17,6 @@ use Silent\Core\DTO\Session\Session;
 use Silent\Core\DTO\Status\Status;
 use Silent\Core\HttpExecutor\HttpExecutor;
 use Silent\Core\HttpExecutor\HttpExecutorInterface;
-use Silent\Core\ScopeBuilder\ScopeBuilder;
 use Silent\Core\WebDriver\Events\AfterCreateSessionEvent;
 use Silent\Core\WebDriver\Events\BeforeCreateSessionEvent;
 use Silent\Core\WebSocket\WebSocket;
@@ -33,7 +31,6 @@ class WebDriver implements WebDriverInterface {
     private WebSocketInterface $ws;
     private EventDispatcherInterface $dispatcher;
     private Capabilities $capabilities;
-    private Scope $actions;
     public function __construct(
         HttpExecutorInterface $httpExecutor,
         ?Capabilities $capabilities = null, 
@@ -55,7 +52,6 @@ class WebDriver implements WebDriverInterface {
         if (isset($this->session)) {
             $this->cdpExecutor = new CDPExecutor($httpExecutor, $session->sessionId);
             $this->ws = new WebSocket($this->session->capabilities->seCdp, $httpExecutor->serializer());
-            $this->actions = new Scope($this->cdpExecutor, $this->executor, $this->session->sessionId);
         }
     }
 
@@ -65,18 +61,10 @@ class WebDriver implements WebDriverInterface {
         $this->executor->setEventDispatcher($dispatcher);
     }
 
-    public function scope(): Scope
+    public function getEventDispatcher(): ?EventDispatcherInterface
     {
-        return $this->actions;
-    }
-
-    public function builder(): ScopeBuilder
-    {
-        if (!isset($this->dispatcher)) {
-            throw new \Exception(sprintf("Neccessary initialize dispatcher to use builder"));
-        }
-
-        return new ScopeBuilder($this->dispatcher, $this);
+        if (!isset($this->dispatcher)) return null;
+        return $this->dispatcher;
     }
 
     public function getExecutor(): HttpExecutorInterface
@@ -103,10 +91,6 @@ class WebDriver implements WebDriverInterface {
 
             if (!isset($this->cdpExecutor)) {
                 $this->cdpExecutor = new CDPExecutor($this->executor, $this->session->sessionId);
-            }
-
-            if (!isset($this->actions)) {
-                $this->actions = new Scope($this->cdpExecutor, $this->executor, $this->session->sessionId);
             }
 
             if (!isset($this->ws)) {

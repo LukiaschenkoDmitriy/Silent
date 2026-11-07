@@ -4,7 +4,7 @@ namespace Tests\Scope;
 
 use PHPUnit\Framework\TestCase;
 use Silent\Core\Command\W3C\Element\Exception\NotFoundElementException;
-use Silent\Core\Command\W3C\Location\Exception\LocationNotSetException as ExceptionLocationNotSetException;
+use Silent\Core\Command\W3C\Location\Exception\LocationNotSetException;
 use Silent\Core\Command\W3C\Location\SetLocationCommand;
 use Silent\Core\DI\Container;
 use Silent\Core\DTO\Element\FindStrategy;
@@ -21,7 +21,7 @@ class ScopeTest extends TestCase {
     protected function setUp(): void
     {
         $this->setup = SetupFixture::init(new Container());
-        $this->scope = $this->setup->getWebDriver()->scope();
+        $this->scope = new Scope($this->setup->getWebDriver());
     }
 
     public function testScopeNavigator() {
@@ -89,7 +89,7 @@ class ScopeTest extends TestCase {
     public function testLocationException() {
         $location = $this->scope->location;
 
-        $this->expectException(ExceptionLocationNotSetException::class);
+        $this->expectException(LocationNotSetException::class);
         $this->expectExceptionMessageIs(sprintf("Location is not set. Please set the location using the %s before using this command.", SetLocationCommand::class));
 
         $location->getLocation();
