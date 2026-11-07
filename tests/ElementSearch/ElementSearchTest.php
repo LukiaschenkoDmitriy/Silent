@@ -1,28 +1,27 @@
 <?php declare(strict_types=1);
 
-namespace Tests\ElementFactory;
+namespace Tests\ElementSearch;
 
 use PHPUnit\Framework\TestCase;
 use Silent\Core\DI\Container;
-use Silent\Core\DTO\Element\FindConstants;
 use Silent\Core\DTO\Element\FindStrategy;
-use Silent\Core\ElementFactory\ElementFactory;
+use Silent\Core\ElementSearch\ElementSearch;
 use Silent\Core\Scope\Scope;
 use Silent\Core\Setup\CoreSetup;
 use Tests\Fixtures\Setup\SetupFixture\SetupFixture;
 
-class ElementFactoryTest extends TestCase {
-    private ElementFactory $factory;
+class ElementSearchTest extends TestCase {
+    private ElementSearch $factory;
     private Scope $scope;
     private CoreSetup $setup;
     protected function setUp(): void
     {
         $this->setup = SetupFixture::init(new Container());
         $this->scope = $this->setup->getWebDriver()->scope();
-        $this->factory = new ElementFactory($this->scope->element, true);
+        $this->factory = new ElementSearch($this->scope->element, true);
     }
 
-    public function testFactory() {
+    public function testElementSearch() {
         $this->scope->navigation->to("https://www.google.com/");
 
         $html = $this->factory->findElement(FindStrategy::CSS_SELECTOR, "html");
@@ -37,6 +36,9 @@ class ElementFactoryTest extends TestCase {
         $this->assertEquals(891, $body->getElementProperty("clientHeight"));
         $this->assertEquals(["interrupted" => false], $body->runElementFunction("scroll", [10, 20]));
         $this->assertEquals("[object HTMLBodyElement]", $body->runJsCodeOnElement(".toLocaleString()"));
+
+        $body->setElementProperty("classList", ["test1 test2"]);
+        $this->assertEquals(["test1", "test2"], $body->getElementProperty("classList"));
     }
 
     protected function tearDown(): void
