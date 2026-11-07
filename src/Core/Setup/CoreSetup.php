@@ -81,13 +81,13 @@ abstract class CoreSetup implements SetupInterface {
     private function getWebDriverWithCapabilitites(): WebDriver {
         $capabilities = $this->capabilities();
 
-        if (isset($this->dispatcher)) {
-            $this->dispatcher->dispatch(new BeforeCreateSessionEvent($capabilities, $capabilities->alwaysMatch->chromeOptions));
-        }
-
         /** @var ModuleInterface $module */
         foreach ($this->moduleRegistry as $module) {
             $module::capabilities($capabilities, $capabilities->alwaysMatch->chromeOptions);
+        }
+
+        if (isset($this->dispatcher)) {
+            $this->dispatcher->dispatch(new BeforeCreateSessionEvent($capabilities, $capabilities->alwaysMatch->chromeOptions));
         }
 
         $webdriver = WebDriver::createSession($capabilities);
