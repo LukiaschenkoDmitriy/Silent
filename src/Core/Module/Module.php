@@ -13,8 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Module implements ModuleInterface {
-    public const CLOSE = 0;
-    public const CONTINUE = 1;
     private mixed $params = null;
     public function setParams(mixed $params): void
     {
@@ -25,7 +23,7 @@ class Module implements ModuleInterface {
         return $this->params;
     }
     public function listeners(EventDispatcherInterface $dispatcher): void {}
-    public function run(WebDriverInterface $webdriver, ContainerInterface $container): int { return static::CONTINUE; }
+    public function run(WebDriverInterface $webdriver, ContainerInterface $container): void {  }
     public static function capabilities(Capabilities $capabilities, ChromeOptions $options): void { }
     public static function load(): Closure
     {

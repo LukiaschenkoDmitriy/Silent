@@ -17,7 +17,7 @@ interface ModuleInterface {
      * @return \Closure(ContainerBuilder, FileLocator): void;
      */
     public static function load(): \Closure;
-    public function run(WebDriverInterface $webdriver, ContainerInterface $container): int;
+    public function run(WebDriverInterface $webdriver, ContainerInterface $container): void;
     public function listeners(EventDispatcherInterface $dispatcher): void;
     public function setParams(mixed $params): void;
     public function getParams(): mixed;
