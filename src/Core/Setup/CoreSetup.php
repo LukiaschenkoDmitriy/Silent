@@ -12,6 +12,8 @@ use Silent\Core\Module\ModuleInterface;
 use Silent\Core\Module\ModuleRegistry;
 use Silent\Core\Registry\RegistryInterface;
 use Silent\Core\Setup\Events\ModuleRegisterEvent;
+use Silent\Core\WebDriver\Events\AfterCreateSessionEvent;
+use Silent\Core\WebDriver\Events\BeforeCreateSessionEvent;
 use Silent\Core\WebDriver\WebDriver;
 use Silent\Core\WebDriver\WebDriverInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -79,6 +81,10 @@ abstract class CoreSetup implements SetupInterface {
     private function getWebDriverWithCapabilitites(): WebDriver {
         $capabilities = $this->capabilities();
 
+        if (isset($this->dispatcher)) {
+            $this->dispatcher->dispatch(new BeforeCreateSessionEvent($capabilities, $capabilities->alwaysMatch->chromeOptions));
+        }
+
         /** @var ModuleInterface $module */
         foreach ($this->moduleRegistry as $module) {
             $module::capabilities($capabilities, $capabilities->alwaysMatch->chromeOptions);
@@ -87,6 +93,10 @@ abstract class CoreSetup implements SetupInterface {
         $webdriver = WebDriver::createSession($capabilities);
 
         $webdriver->init();
+
+        if (isset($this->dispatcher)) {
+            $this->dispatcher->dispatch(new AfterCreateSessionEvent($webdriver->getSession(), $webdriver));
+        }
 
         return $webdriver;
     }
